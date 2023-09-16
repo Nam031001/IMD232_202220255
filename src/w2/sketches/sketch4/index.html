@@ -16,23 +16,42 @@
   </head>
   <body>
     <div class="viewport">
-      <main>
-        <section>
-          <div class="container"></div>
-        </section>
-      </main>
-      <footer>
+      <header>
         <section>
           <div class="container">
+            <h1>남현지 W2 Sketch4</h1>
+          </div>
+        </section>
+      </header>
+      <main>
+        <section>
+          <div class="container">
+            <h2 id="user-name-goes-here"></h2>
+          </div>
+        </section>
+      </main>
+      <footer id="user-name-goes-here-">
+        <section>
+          <div class="container">
+            <h2>코드</h2>
             <h6>index.html</h6>
             <pre
               class="line-numbers"
               data-src="./index.html"
-              data-download-link
-              data-line="17"></pre>
+              data-download-link></pre>
           </div>
         </section>
       </footer>
     </div>
+    <script>
+      let userName = prompt('당신의 이름 무엇입니까?', '홍길동');
+      let isUserNameCorrect = confirm(
+        '당신의 이름이 ' + userName + '이 맞습니까?'
+      );
+      if (isUserNameCorrect == true) {
+        document.getElementById('user-name-goes-here').textContent =
+          '환영합니다. ' + userName + '님';
+      }
+    </script>
   </body>
 </html>
