@@ -54,7 +54,13 @@ function draw() {
   rect(width * 0.7, height * 0.7, width * 0.7, height * 0.01);
   fill('#FFCC33');
   circle(width * 0.9, height * 0.65, width * 0.08);
+  fill('#CCCC33');
+  circle(width * 0.9, height * 0.62, width * 0.01);
+  fill('#FFCC33');
   circle(width * 0.69, height * 0.45, width * 0.08);
+  fill('#CCCC33');
+  circle(width * 0.71, height * 0.45, width * 0.01);
+  fill('#FFCC33');
   circle(width * 0.64, height * 0.5, width * 0.08);
   circle(width * 0.79, height * 0.5, width * 0.08);
   circle(width * 0.72, height * 0.52, width * 0.08);
