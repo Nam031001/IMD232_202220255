@@ -68,11 +68,14 @@ function draw() {
   // 양동이
   fill('#CCCC33');
   rect(width * 0.6, height * 0.52, width * 0.23, height * 0.19, 0, 0, 50, 50);
+  fill('#FFFF99');
+  rect(width * 0.61, height * 0.52, width * 0.17, height * 0.19, 0, 0, 50, 50);
 
   // 조명
   fill('#FFFF99');
   circle(width * 0.965, height * 0.22, width * 0.12);
   fill('#CCCC33');
   rect(width * 0.94, height * 0, width * 0.05);
+  rect(width * 0.8, height * 0.05, width * 0.25, height * 0.2, 10);
   rect(width * 0.8, height * 0.05, width * 0.25, height * 0.2, 10);
 }
