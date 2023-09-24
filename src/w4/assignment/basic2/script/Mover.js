@@ -21,7 +21,7 @@ class Mover {
     this.acc.mult(0.2);
 
     this.vel.add(this.acc);
-    this.vel.limit(5);
+    this.vel.limit(10);
 
     this.pos.add(this.vel);
 
