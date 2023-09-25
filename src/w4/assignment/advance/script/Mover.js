@@ -25,7 +25,7 @@ class Mover {
     }
 
     this.vel.add(this.acc);
-    this.vel.limit(10);
+    this.vel.limit(8);
     this.pos.add(this.vel);
 
     this.checkEdges();
