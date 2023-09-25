@@ -2,6 +2,9 @@ let pos;
 let vel;
 let acc;
 let radius = 50;
+let target;
+let accDisplay;
+let mouse;
 
 let anInstance;
 let anotherInstance;
@@ -26,14 +29,17 @@ function draw() {
   // display();
   anInstance.display();
   anInstance.update();
-  anInstance.infiniteEdge();
+  anInstance.checkEdges();
   anInstance.displayVector();
 }
 
 function reset() {
-  pos = createVector(width / 2, height / 2);
+  target = createVector(mouseX, mouseY);
+  accDisplay = createVector(0, 0);
+  mouse = createVector(0, 0);
+  pos = createVector(ellipse.x, ellipse.y);
   vel = createVector(0, 0);
-  acc = createVector();
+  acc = createVector(p5.Vector.sub(target, pos));
 }
 
 function update() {
