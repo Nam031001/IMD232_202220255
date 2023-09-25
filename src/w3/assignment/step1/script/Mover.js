@@ -53,14 +53,12 @@ class Mover {
       this.pos.y + this.accDisplay.y * 100
     );
     stroke('black');
+    const distanceVector = p5.Vector.sub(this.mouse, this.pos);
     line(
       this.pos.x,
       this.pos.y,
-
-      this.mouse.x,
-      this.mouse.y
-      // this.pos.x + this.accDisplay.x * 100,
-      // this.pos.y + this.accDisplay.y * 100
+      this.pos.x + distanceVector.x,
+      this.pos.y + distanceVector.y
     );
   }
 }
