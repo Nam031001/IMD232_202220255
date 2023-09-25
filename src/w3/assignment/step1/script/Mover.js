@@ -42,15 +42,15 @@ class Mover {
     line(
       this.pos.x,
       this.pos.y,
-      this.pos.x + this.vel.x * 20,
-      this.pos.y + this.vel.y * 20
+      this.pos.x + this.vel.x * 10,
+      this.pos.y + this.vel.y * 10
     );
     stroke('red');
     line(
       this.pos.x,
       this.pos.y,
-      this.pos.x + this.accDisplay.x * 300,
-      this.pos.y + this.accDisplay.y * 300
+      this.pos.x + this.accDisplay.x * 100,
+      this.pos.y + this.accDisplay.y * 100
     );
     stroke('black');
     line(
