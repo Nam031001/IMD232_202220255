@@ -1,31 +1,41 @@
-let pos;
-let vel;
-let radious = 25;
+let ball;
+let ball2;
+let gravity;
+let wind;
+let att;
 
 function setup() {
   setCanvasContainer('mySketchGoesHere', 3, 2, true);
-  background(255);
-  pos = createVector(width / 2, height / 2);
-  vel = createVector(3, 5);
-  console.log(pos);
-  console.log(vel);
-  ellipse(pos.x, pos.y, 50);
+  background('salmon');
+  ball = new Mover(width / 3, 0, 50);
+  ball2 = new Mover((2 * width) / 3, 0, 10);
+  gravity = createVector(0, 0.1);
+  // 왼쪾으로 가는 바람
+  wind = createVector(-1, 0);
+  att = new Attractor(width / 2, height / 2, 100);
 }
+
 function draw() {
-  // 백그라운드가 없으면 원이 잔상처럼 계속 남는다
-  background(255);
-  pos.add(vel);
-  // if (pos.x < 0) {
-  //   vel.x *= -1;
-  // } else if (pos.x > width) {
-  //   vel.x *= -1;
-  // } 또는
-  if (pos.x - radious < 0 || pos.x + radious > width) {
-    vel.x *= -1;
-  }
-  if (pos.y - radious < 0 || pos.y + radious > height) {
-    vel.y *= -1;
-  }
-  // if활용 시 x좌표와 y좌표는 else가 아니라 if로 따로 설정해야 한다
-  ellipse(pos.x, pos.y, 2 * radious);
+  // let g = p5.Vector.mult(gravity, ball.mass);
+  // let g2 = p5.Vector.mult(gravity, ball2.mass);
+  // ball.applyForce(g);
+  // ball2.applyForce(g2);
+  // if (mouseIsPressed) {
+  //   ball.applyForce(wind);
+  //   ball2.applyForce(wind);
+  // }
+
+  let force1 = att.attract(ball);
+  // ball.applyForce(force1);
+  let force2 = att.attract(ball2);
+  // ball2.applyForce(force2);
+  ball.update();
+  ball2.update();
+  // ball.edgeBounce();
+  // ball2.edgeBounce();
+  background('salmon');
+  fill('white');
+  ball.display();
+  ball2.display();
+  att.display();
 }
