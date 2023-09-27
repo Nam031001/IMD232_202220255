@@ -28,14 +28,15 @@ class Mover {
   //  통통튀기는 모션
   edgeBounce() {
     if (this.pos.x < 0 + this.radius) {
-      let dalta = this.pos.x - (0 + this.radius);
-      this.pos.x += -2 * this.delta;
+      let delta = this.pos.x - (0 + this.radius);
+      this.pos.x += -2 * delta;
       this.vel.x *= -1;
     } else if (this.pos.x > width - 1 - this.radius) {
       let delta = this.pos.x - (width - 1 - this.radius);
       this.pos.x += -2 * delta;
       this.vel.x *= -1;
-    } else if (this.pos.y > height - 1 - this.radius) {
+    }
+    if (this.pos.y > height - 1 - this.radius) {
       let delta = this.pos.y - (height - 1 - this.radius);
       this.pos.y += -2 * delta;
       this.vel.y *= -1;

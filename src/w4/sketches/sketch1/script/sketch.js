@@ -15,8 +15,8 @@ function setup() {
 
 function draw() {
   let g = p5.Vector.mult(gravity, ball.mass);
-  let g2 = p5.Vector.mult(gravity, ball2.mass);
   ball.applyForce(g);
+  let g2 = p5.Vector.mult(gravity, ball2.mass);
   ball2.applyForce(g2);
   if (mouseIsPressed) {
     ball.applyForce(wind);
