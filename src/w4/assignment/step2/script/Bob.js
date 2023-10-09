@@ -1,3 +1,5 @@
+// 마우스올리면 색변하고 드래그할수 있는 검은 공
+
 class Bob {
   constructor(x, y, mass, rad) {
     this.pos = createVector(x, y);
@@ -8,6 +10,18 @@ class Bob {
     this.isHover = false;
     this.isDragging = false;
     this.movingOffset = createVector();
+  }
+
+  applyForce(force) {
+    const acc = p5.Vector.div(force, this.mass);
+    this.acc.add(acc);
+  }
+  update() {
+    this.vel.mult(0.98);
+    // 속력대비 0.9만큼씩을 매번 곱하라
+    this.vel.add(this.acc);
+    this.pos.add(this.vel);
+    this.acc.mult(0);
   }
 
   display() {
@@ -22,6 +36,7 @@ class Bob {
     }
     ellipse(this.pos.x, this.pos.y, 2 * this.rad);
   }
+
   mouseMoved(mX, mY) {
     this.isHover =
       (this.pos.x - mX) ** 2 + (this.pos.y - mY) ** 2 <= this.rad ** 2;

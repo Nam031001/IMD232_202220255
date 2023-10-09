@@ -5,91 +5,108 @@ class Mover {
     this.acc = createVector(0, 0);
     this.accDisplay = createVector(0, 0);
     this.mass = mass;
-    this.radius = sqrt(this.mass) * 10;
+    // mass = 질량
+    this.radius = this.mass ** 0.5 * 10;
+
     this.isHover = false;
     this.isDragging = false;
     this.movingOffset = createVector();
+
+    this.pMouseX = x;
+    this.pMouseY = y;
+  }
+
+  chkIsHover(x, y) {
+    const distSq = (this.pos.x - x) ** 2 + (this.pos.y - y) ** 2;
+    this.isHover = distSq <= rad ** 2;
   }
 
   applyForce(force) {
-    let f = p5.Vector.div(force, this.mass);
-    this.acc.add(f);
+    let forceDividedByMass = createVector(force.x, force.y);
+    forceDividedByMass.div(this.mass);
+    this.acc.add(forceDividedByMass);
   }
 
+  // 위치 업데이트
   update() {
-    this.vel.add(this.acc);
-    this.pos.add(this.vel);
-    this.acc.mult(0); // 가속도 초기화
+    if (!this.isDragging) {
+      // 드래그 중이 아닐 때만 중력 적용
+      this.vel.add(this.acc);
+      this.pos.add(this.vel);
+      this.accDisplay.set(this.acc);
+      this.acc.mult(0);
+    }
 
     this.checkEdges();
   }
-
-  display() {
-    noStroke();
-    fill(0);
-    if (this.isDragging) {
-      fill('#ff0000');
-    } else if (this.isHover) {
-      fill(127);
+  contactEdge() {
+    if (this.pos.y >= height - 1 - this.radius - 1) {
+      return true;
+    } else {
+      return false;
     }
-    ellipse(this.pos.x, this.pos.y, 2 * this.radius);
   }
 
+  //   통통튀기기
   checkEdges() {
-    const bounce = -0.9;
+    const bounce = -0.5;
     if (this.pos.x < 0 + this.radius) {
-      this.pos.x = 0 + this.radius;
+      this.pos.x -= 0 + this.radius;
+      this.pos.x *= -1;
+      this.pos.x += 0 + this.radius;
       this.vel.x *= bounce;
     } else if (this.pos.x > width - 1 - this.radius) {
-      this.pos.x = width - 1 - this.radius;
+      this.pos.x -= width - 1 - this.radius;
+      this.pos.x *= -1;
+      this.pos.x += width - 1 - this.radius;
       this.vel.x *= bounce;
     }
     if (this.pos.y > height - 1 - this.radius) {
-      this.pos.y = height - 1 - this.radius;
+      this.pos.y -= height - 1 - this.radius;
+      this.pos.y *= -1;
+      this.pos.y += height - 1 - this.radius;
       this.vel.y *= bounce;
     }
   }
 
-  displayVector() {
-    stroke('red');
-    line(
-      this.pos.x,
-      this.pos.y,
-      this.pos.x + this.vel.x * 10,
-      this.pos.y + this.vel.y * 10
-    );
-    stroke('lime');
-    line(
-      this.pos.x,
-      this.pos.y,
-      this.pos.x + this.accDisplay.x * 100,
-      this.pos.y + this.accDisplay.y * 100
-    );
+  //   화면에 표현
+  display() {
+    noStroke();
+    if (this.isHover) {
+      fill(90, 80, 50);
+    } else {
+      fill(90, 60, 50);
+    }
+    ellipse(this.pos.x, this.pos.y, 2 * this.radius);
   }
 
-  // 마우스가 공 위에 있는지 확인
-  isMouseOver() {
-    const d = dist(mouseX, mouseY, this.pos.x, this.pos.y);
-    return d < this.radius;
+  mouseMoved(mX, mY) {
+    this.chkIsHover(mX, mY);
   }
 
-  // 마우스 누를 때 호출
-  mousePressed() {
-    if (this.isMouseOver()) {
+  mousePressed(mX, mY) {
+    if (this.isHover) {
       this.isDragging = true;
       this.movingOffset.set(mX - this.pos.x, mY - this.pos.y);
     }
   }
-
-  // 마우스 드래그 중 호출
-  mouseDragged() {
+  mouseDragged(mX, mY) {
     if (this.isDragging) {
-      this.pos.x = mouseX + this.movingOffset.x;
-      this.pos.y = mouseY + this.movingOffset.y;
+      const mVec = createVector(mX, mY);
+      const pMVec = createVector(this.pMouseX, this.pMouseY);
+      const force = p5.Vector.sub(mVec, pMVec);
+
+      // 힘을 적용
+      this.applyForce(force);
+
+      // 이전 프레임의 마우스 위치 업데이트
+      this.pMouseX = mX;
+      this.pMouseY = mY;
+
+      // 공의 위치 업데이트
+      this.pos.set(mX - this.movingOffset.x, mY - this.movingOffset.y);
     }
   }
-
-  // 마우스 놓을 때 호출
   mouseReleased() {
     this.isDragging = false;
   }
