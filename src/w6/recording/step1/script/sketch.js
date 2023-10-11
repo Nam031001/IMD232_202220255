@@ -1,23 +1,21 @@
-let aVariable = 20;
-let anArray = [30, 60, 90];
-let anotherArray = [];
+// particle의 기본원리 = 일정주기가 넘으면 다시 생성되게함
 
+let particle;
+let gravity;
 function setup() {
   setCanvasContainer('canvas', 3, 2, true);
-  console.log(aVariable);
-  console.log('anArray', anArray);
-  console.log('anArray[0]', anArray[0]);
-  console.log('anArray[1]', anArray[1]);
-  console.log('anArray[2]', anArray[2]);
-  // 해당 어레이의 몇번쨰 순서에 있는 값을 뱉음
-  console.log('anArray.length', anArray.length);
-  console.log('anotherArray[0]', anotherArray[0]);
-  console.log('anotherArray[1]', anotherArray[1]);
-  anotherArray.push('어레이에 넣은 첫 데이터');
-  console.log('anotherArray[0]', anotherArray[0]);
-  anotherArray.push(50);
-  console.log('anotherArray[1]', anotherArray[1]);
-
+  particle = new Particle(width / 2, 20);
+  gravity = createVector(0, 0.1);
   background(255);
 }
-function draw() {}
+function draw() {
+  // console.log(particle.isDead());
+  if (particle.isDead()) {
+    // 수명이 다하면 새로 생성해줌
+    particle = new Particle(width / 2, 20);
+  }
+  particle.applyForce(gravity);
+  particle.update();
+  background(255);
+  particle.display();
+}

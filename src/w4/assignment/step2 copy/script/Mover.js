@@ -79,6 +79,8 @@ class Mover {
   }
 
   mouseMoved(mX, mY) {
+    this.isHover =
+      (this.pos.x - mX) ** 2 + (this.pos.y - mY) ** 2 <= this.rad ** 2;
     this.chkIsHover(mX, mY);
   }
 

@@ -1,73 +1,55 @@
-// let aMover;
-let movers = [];
-// movers라는 변수에 어레이개념을 집어넣음, 따라서 괄호도 {}가 아닌[]를 사용
-const moversNum = 1000;
-// movers의 갯수를 정해준다
-let mVec;
-// =>마우스위치
+// particle의 기본원리 = 일정주기가 넘으면 다시 생성되게함
+//없애야할 건 없애고 화면상에 보이는 것만 계산되도록 해야 한다
+// => 렉방지
+
+let emitters = [];
+let gravity = 0;
+let reppler;
 
 function setup() {
   setCanvasContainer('canvas', 3, 2, true);
 
-  // aMover = new Mover(width / 2, height / 2, 10, 25, 'cornflowerblue');
-  colorMode(HSL, 360, 100, 100, 100);
-  for (let a = 0; a < moversNum; a++) {
-    movers.push(
-      new Mover(
-        random(width),
-        random(height),
-        10,
-        25,
-        color(random(360), 100, 50, 25)
-      )
-    );
+  gravity = createVector(0, 0.05);
+
+  repeller = new Repeller(width / 2, height / 2, 5000);
+
+  // 등간격으로 떨어지는 5개의 물줄기
+  for (let i = 0; i < 5; i++) {
+    emitters.push(new Emitter((width / 6) * (i + 1), 20));
   }
-  mVec = createVector();
 
   background(255);
 }
+
 function draw() {
-  mVec.set(mouseX, mouseY);
-
-  // const dirVec = p5.Vector.sub(mVec, aMover.pos);
-  // // 마우스를 따라오는거 구현, 마우스좌표에서 객체의 좌표를 뺴기- 거리구하기
-  // dirVec.setMag(0.5);
-  // // 항상 0.5정도의 가속도를 갖게함
-  for (let a = 0; a < movers.length; a++) {
-    const dirVec = p5.Vector.sub(mVec, movers[a].pos);
-    dirVec.setMag(0.5);
-    movers[a].applyForce(dirVec);
-    movers[a].update();
+  for (let i = 0; i < emitters.length; i++) {
+    emitters[i].addParticle();
   }
 
   background(255);
 
-  // for (let a = 0; a < movers.length; a++) {
-  //   movers[a].display();
-  //   movers[a].displayVector();
-  // }
-  // for(let 변수이름 = 0; 변수이름<어레이이름.length; 변수이름++){
-  //   어레이이름[변수이름]
-  // }
-
-  //=
-
-  // 어레이이름.forEach(function (아무변수이름) {
-  //   아무변수이름.오브젝트메서드
-  // });
-  // 어레이이름.forEach((아무변수이름) => {
-  //   아무변수이름.오브젝트메서드
-  // });
-
-  // movers.forEach(function (anyname) {
-  //   anyname.display();
-  //   anyname.displayVector();
-  // });
-
-  //=
-  //화살표함수
-  movers.forEach((anyname) => {
-    anyname.display();
-    anyname.displayVector();
-  });
+  for (let i = 0; i < emitters.length; i++) {
+    emitters[i].applyGravity(gravity);
+    emitters[i].applyRepeller(repeller);
+    emitters[i].update();
+    emitters[i].display();
+  }
+  repeller.display();
 }
+
+function mouseMoved() {
+  repeller.mouseMoved(mouseX, mouseY);
+}
+function mousePressed() {
+  repeller.mousePressed(mouseX, mouseY);
+}
+function mouseDragged() {
+  repeller.mouseDragged(mouseX, mouseY);
+}
+function mouseReleased() {
+  repeller.mouseReleased();
+}
+// 클릭하는 곳에서 새로운 분수가 생겨난다
+// function mousePressed() {
+//   emitters.push(new Emitter(mouseX, mouseY));
+// }
