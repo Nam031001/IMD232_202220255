@@ -9,7 +9,7 @@ let isDragging = false;
 let deltaX, deltaY;
 
 function setup() {
-  setCanvasContainer('canvas', 3, 2, true);
+  setCanvasContainer('canvas', 1, 1, true);
   background('white');
   mover = new Mover(width / 2, height / 2, 20);
   x = width / 2;
@@ -37,6 +37,7 @@ function draw() {
   mover.update();
   mover.checkEdges();
   mover.display();
+  mover.applyPower();
 }
 
 function chkHover(mX, mY) {

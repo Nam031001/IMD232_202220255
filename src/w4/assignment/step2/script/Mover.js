@@ -6,14 +6,13 @@ class Mover {
     this.accDisplay = createVector(0, 0);
     this.mass = mass;
     // mass = 질량
-    this.radius = this.mass ** 0.5 * 10;
+    this.radius = this.mass ** 0.5 * 20;
 
     this.isHover = false;
     this.isDragging = false;
     this.movingOffset = createVector();
-
-    this.pMouseX = x;
-    this.pMouseY = y;
+    this.mVec = createVector(x, y);
+    this.pMVec = createVector(this.pMouseX, this.pMouseY);
   }
 
   chkIsHover(x, y) {
@@ -25,6 +24,12 @@ class Mover {
     let forceDividedByMass = createVector(force.x, force.y);
     forceDividedByMass.div(this.mass);
     this.acc.add(forceDividedByMass);
+  }
+
+  applyPower() {
+    this.power = p5.Vector.sub(this.mVec, this.pMVec);
+    this.power.mult(0.0001);
+    this.pos.add(this.power);
   }
 
   // 위치 업데이트
@@ -47,7 +52,7 @@ class Mover {
 
   //   통통튀기기
   checkEdges() {
-    const bounce = -0.2;
+    const bounce = -0.5;
     if (this.pos.x < 0 + this.radius) {
       this.pos.x -= 0 + this.radius;
       this.pos.x *= -1;
@@ -67,7 +72,6 @@ class Mover {
     }
   }
 
-  //   화면에 표현
   display() {
     noStroke();
     if (this.isHover) {
@@ -95,7 +99,7 @@ class Mover {
       const force = p5.Vector.sub(mVec, pMVec);
 
       // 힘을 적용
-      this.applyForce(force);
+      // this.applyForce(force);
 
       // 이전 프레임의 마우스 위치 업데이트
       this.pMouseX = mX;
