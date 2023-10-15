@@ -42,8 +42,15 @@ function draw() {
 
       // Draw a line connecting the small circle to the center
       line(0, 0, smallCircleX, smallCircleY);
+
+      // Assign colors based on modular arithmetic
+      const colorHue = ((c + r) % 4) * 90; // 0, 90, 180, 270
+
+      stroke(colorHue, 100, 50);
+
       // Draw the small circle
       ellipse(0, 0, 70);
+
       fill(0);
       ellipse(smallCircleX, smallCircleY, 20);
 
