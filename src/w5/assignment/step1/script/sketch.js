@@ -50,7 +50,7 @@ function draw() {
 
       // Draw the small circle
       ellipse(0, 0, 70);
-
+      noStroke();
       fill(0);
       ellipse(smallCircleX, smallCircleY, 20);
 
