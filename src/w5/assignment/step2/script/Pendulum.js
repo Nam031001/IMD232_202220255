@@ -14,6 +14,7 @@ class Pendulum {
     this.draggingOffset = createVector();
     this.isHover = false;
     this.isDragging = false;
+    // ...
   }
 
   applyGravity(gravity) {
