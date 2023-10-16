@@ -11,6 +11,7 @@ function setup() {
   gravity = createVector(0, 0.5);
 
   background(255);
+  // ...
 }
 
 function draw() {
