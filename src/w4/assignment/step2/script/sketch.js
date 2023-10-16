@@ -7,16 +7,18 @@ let gravity;
 let isHover = false;
 let isDragging = false;
 let deltaX, deltaY;
+let throwingForce;
 
 function setup() {
   setCanvasContainer('canvas', 1, 1, true);
-  background('white');
   mover = new Mover(width / 2, height / 2, 20);
   x = width / 2;
   y = height / 2;
   gravity = createVector(0, 0.1);
+  throwingForce = createVector();
 
   colorMode(HSL, 360, 100, 100, 100);
+  background('white');
 }
 
 function draw() {
@@ -37,7 +39,6 @@ function draw() {
   mover.update();
   mover.checkEdges();
   mover.display();
-  mover.applyPower();
 }
 
 function chkHover(mX, mY) {
@@ -56,7 +57,6 @@ function mousePressed() {
     isDragging = true;
     deltaX = mouseX - x;
     deltaY = mouseY - y;
-    //클릭을 하는 순간 마우스 좌표와 원의 중심지간의 거리를 계산
   }
 
   mover.mousePressed(mouseX, mouseY);
@@ -66,11 +66,14 @@ function mouseDragged() {
   if (isDragging) {
     x = mouseX - deltaX;
     y = mouseY - deltaY;
-    //계산한 벡터길이를 마우스좌표에서 뻄, 원의 중심지를 이동
   }
   mover.mouseDragged(mouseX, mouseY);
 }
 function mouseReleased() {
-  isDragging = false;
   mover.mouseReleased();
+  pMVec.set(pmouseX, pmouseY);
+  mVec.set(mouseX, mouseY);
+  const throwingForce = p5.Vector.sub(mVec, pMVec);
+  throwingForce.mult(1);
+  mover.applyForce(throwingForce);
 }

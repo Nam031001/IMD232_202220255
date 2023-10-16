@@ -3,22 +3,22 @@ class Mover {
     this.pos = createVector(x, y);
     this.vel = createVector(0, 0);
     this.acc = createVector(0, 0);
-    this.accDisplay = createVector(0, 0);
     this.mass = mass;
     // mass = 질량
-    this.radius = this.mass ** 0.5 * 10;
+    this.radius = this.mass ** 0.5 * 20;
+    this.accDisplay = createVector(0, 0);
 
     this.isHover = false;
     this.isDragging = false;
+    this.draggingOffset = false;
     this.movingOffset = createVector();
-
-    this.pMouseX = x;
-    this.pMouseY = y;
+    // this.mVec = createVector(x, y);
+    // this.pMVec = createVector(this.pMouseX, this.pMouseY);
   }
 
-  chkIsHover(x, y) {
+  chkHover(x, y) {
     const distSq = (this.pos.x - x) ** 2 + (this.pos.y - y) ** 2;
-    this.isHover = distSq <= rad ** 2;
+    this.isHover = distSq <= this.radius ** 2;
   }
 
   applyForce(force) {
@@ -26,28 +26,16 @@ class Mover {
     forceDividedByMass.div(this.mass);
     this.acc.add(forceDividedByMass);
   }
-
   // 위치 업데이트
   update() {
-    if (!this.isDragging) {
-      // 드래그 중이 아닐 때만 중력 적용
-      this.vel.add(this.acc);
-      this.pos.add(this.vel);
-      this.accDisplay.set(this.acc);
-      this.acc.mult(0);
-    }
-  }
-  contactEdge() {
-    if (this.pos.y >= height - 1 - this.radius - 1) {
-      return true;
-    } else {
-      return false;
-    }
+    this.vel.add(this.acc);
+    this.pos.add(this.vel);
+    this.accDisplay.set(this.acc);
+    this.acc.mult(0);
   }
 
-  //   통통튀기기
   checkEdges() {
-    const bounce = -0.2;
+    const bounce = -0.7;
     if (this.pos.x < 0 + this.radius) {
       this.pos.x -= 0 + this.radius;
       this.pos.x *= -1;
@@ -67,7 +55,6 @@ class Mover {
     }
   }
 
-  //   화면에 표현
   display() {
     noStroke();
     if (this.isHover) {
@@ -78,41 +65,31 @@ class Mover {
     ellipse(this.pos.x, this.pos.y, 2 * this.radius);
   }
 
+  contactEdge() {
+    if (this.pos.y >= height - 1 - this.radius - 1) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   mouseMoved(mX, mY) {
-    this.isHover =
-      (this.pos.x - mX) ** 2 + (this.pos.y - mY) ** 2 <= this.rad ** 2;
-    this.chkIsHover(mX, mY);
+    this.chkHover(mX, mY);
   }
 
   mousePressed(mX, mY) {
     if (this.isHover) {
       this.isDragging = true;
-      this.movingOffset.set(mX - this.pos.x, mY - this.pos.y);
+      this.movingOffset(mX - this.pos.x, mY - this.pos.y);
     }
   }
   mouseDragged(mX, mY) {
     if (this.isDragging) {
-      const mVec = createVector(mX, mY);
-      const pMVec = createVector(this.pMouseX, this.pMouseY);
-      const force = p5.Vector.sub(mVec, pMVec);
-
-      // 힘을 적용
-      this.applyForce(force);
-
-      // 이전 프레임의 마우스 위치 업데이트
-      this.pMouseX = mX;
-      this.pMouseY = mY;
-
-      // 공의 위치 업데이트
       this.pos.set(mX - this.movingOffset.x, mY - this.movingOffset.y);
     }
   }
+
   mouseReleased() {
     this.isDragging = false;
-
-    // 중력 적용
-    let gravityA = createVector(gravity.x, gravity.y);
-    gravityA.mult(this.mass);
-    this.applyForce(gravityA);
   }
 }
