@@ -75,10 +75,10 @@ class Ball {
   }
 }
 
+let emitter;
 let balls = [];
 let gravity;
 let wind;
-let emitter;
 
 function setup() {
   setCanvasContainer('canvas', 2, 1, true);
@@ -86,6 +86,7 @@ function setup() {
   colorMode(HSL, 360, 100, 100);
 
   emitter = new Emitter(width / 2, 0);
+
   for (let n = 0; n < 10; n++) {
     balls.push(new Ball(random(width), 0, random(1, 20), random(360), 100, 50));
   }
@@ -93,20 +94,21 @@ function setup() {
   gravity = createVector(0, 0.1);
   wind = createVector(0.5, 0);
 
-  background('white');
+  background(255);
 }
 
 function draw() {
-  background('white');
+  background(255);
   balls.forEach((each) => {
     const scaledG = p5.Vector.mult(gravity, each.mass);
-    each.applyForce();
+    each.applyForce(scaledG);
     each.applyForce(wind);
     each.update();
     each.display();
   });
-  emitter.createBall();
-  emitter.applyForce(gravity);
+  // emitter.createBall();
+  emitter.applyGravity(gravity);
+  emitter.applyForce(wind);
   emitter.update();
   emitter.display();
 }

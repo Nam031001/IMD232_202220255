@@ -1,10 +1,3 @@
-// Original Code from: https://editor.p5js.org/natureofcode/sketches/uT9VpVvCO
-// Daniel Shiffman
-// The Nature of Code
-// Example 2-9: N-Bodies Attraction
-
-//Modified by OO-SUNG SON (spctrm404)
-
 let bodies = [];
 
 let gravity;
