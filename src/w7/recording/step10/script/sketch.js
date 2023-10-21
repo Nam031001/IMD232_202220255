@@ -1,28 +1,37 @@
-// sin(angle)을 이용해 애니메이션넣기
-// 1초만에 왔다갔다하는 모션
-let angle = 0;
-let angleVel;
-let amplitude = 50;
-let period = 60;
-//60 = 1초
+let flowfiled;
+let mVec;
 
 function setup() {
-  setCanvasContainer('canvas', 3, 2, true);
+  setCanvasContainer('canvas', 1, 1, true);
 
-  angleVel = periodToAngleVel(period);
+  flowfiled = new Flowfiled(30, 0.05);
+  mVec = createVector(0, 0);
 
   background(255);
 }
 function draw() {
-  angle += angleVel;
+  mVec.set(mouseX, mouseY);
+
+  const lookupVec = flowfiled.lookup(mVec);
+
   background(255);
+  flowfiled.display();
 
-  line(0, height / 2, width, height / 2);
-  ellipse(width / 2, height / 2 + sin(angle) * amplitude, 50);
-
-  // console.log(sin(angle));
+  // 해당각도를 마우스가 가는곳마다 빨간선으로 표기하기
+  push();
+  translate(mVec.x, mVec.y);
+  rotate(lookupVec.heading());
+  noStroke();
+  // fill('white');
+  // ellipse(0, 0, 20);
+  // noFill();
+  strokeWeight(4);
+  stroke('red');
+  line(-50, 0, 50, 0);
+  pop();
 }
 
-function periodToAngleVel(periodAsFrame) {
-  return TAU / periodAsFrame;
+// 새로고침할때마다 다르게 나타내기
+function mousePressed() {
+  flowfiled.init();
 }

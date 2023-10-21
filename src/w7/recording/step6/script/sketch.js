@@ -1,34 +1,50 @@
+// noise
+// 바로 앞 예제보다는 비교적 엄청 랜덤하게 값이 나오진 않는다
+
+let dataPoint = [];
+//추가
+let noiseX = 0;
+let noiseXAdd = 0.01;
+
 function setup() {
   setCanvasContainer('canvas', 3, 2, true);
-  background('white');
-  line(width / 2, 0, width / 2, height);
-  line(0, height / 2, width, height / 2);
 
-  //   어레이와 다른 push다
-  line(200, 0, 200, height);
-  line(0, 100, width, 100);
+  frameRate(5);
+  // 프레임을 기본값(60)에서 초당 5번으로 바꾸기
 
-  push();
-  translate(width / 2, height / 2);
-  rotate((TAU / 360) * 25);
-  noStroke();
-  fill('salmon');
-  rect(0, 0, 50);
-  stroke('salmon');
-  line(200, 0, 200, height);
-  line(0, 100, width, 100);
-  pop();
+  for (let i = 0; i < 50; i++) {
+    dataPoint.push(0.5);
+  }
 
-  //   다른 도형을 다시 회전시킬 경우 설정해뒀던 원점과 회전값을 다시 돌려놔야한다
-  //   translate(-width / 2, -height / 2);
-  //   rotate((TAU / 360) * -25);
-  //   => push()와 pop()으로 대체할 수 있다
-
-  translate(200, 100);
-  rotate((TAU / 360) * -15);
-  //   fill('slateblue');
-  rect(0, 0, 50);
-  rect(100, 100, 50);
+  background(255);
+  randomSeed(50);
+  // 컴퓨터 안에 랜덤한 값들이 미리 저장된 것들이 있는데 어떤 숫자를 넣느냐에 따라 그 표의 첫번째부터 랜덤값을 호출
 }
 
-function draw() {}
+function draw() {
+  // dataPoint[dataPoint.length - 1] = random();
+  dataPoint[dataPoint.length - 1] = noise(noiseX);
+  background(255);
+  noStroke();
+  fill(0);
+  for (let i = 0; i < dataPoint.length; i++) {
+    const x = (width / (dataPoint.length + 1)) * (i + 1);
+    const y = map(dataPoint[i], 0, 1, height, 0);
+    ellipse(x, y, 10);
+  }
+  stroke(0);
+  noFill();
+  beginShape();
+  for (let i = 0; i < dataPoint.length; i++) {
+    const x = (width / (dataPoint.length + 1)) * (i + 1);
+    const y = map(dataPoint[i], 0, 1, height, 0);
+    vertex(x, y);
+  }
+  endShape();
+
+  for (let i = 0; i < dataPoint.length - 1; i++) {
+    // 데이터포인트의 i는 자기보다 뒤에있는 친구의 값을 가지고 오게한다
+    dataPoint[i] = dataPoint[i + 1];
+  }
+  noiseX += noiseXAdd;
+}

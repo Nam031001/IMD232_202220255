@@ -1,48 +1,42 @@
-let nGon = 3;
-//삼각형
-let rad = 250;
-//의 크기
-let x;
-let y;
-//의 위치
+const tileSize = 40;
+let columnNum;
+let rowNum;
+// 직선의 변화의 관계성수치
+let noiseCoordMult = 0.05;
 
 function setup() {
-  setCanvasContainer('canvas', 3, 2, true);
+  setCanvasContainer('canvas', 1, 1, true);
+
+  columnNum = floor(width / tileSize);
+  rowNum = floor(height / tileSize);
+
   background(255);
+
+  // noiseSeed(0);
 }
+
 function draw() {
-  x = width / 2;
-  y = height / 2;
-
+  // randomSeed(100);
   background(255);
-
-  noFill();
-  stroke(0);
-  strokeWeight(1);
-  ellipse(x, y, 2 * rad);
-  noStroke();
-  fill(0);
-  for (let a = 0; a < nGon; a++) {
-    const angle =
-      (TAU / nGon) * a -
-      //위를 시작점으로 바꾸기=90도를 더함
-      (TAU / 360) * 90;
-    const pointX = cos(angle) * rad + x;
-    const pointY = sin(angle) * rad + y;
-    ellipse(pointX, pointY, 10);
+  // noStroke();
+  // 격자 그리기
+  for (let row = 0; row < rowNum; row++) {
+    for (let column = 0; column < columnNum; column++) {
+      const idx = column + row * columnNum;
+      // fill(random() * 255);
+      // fill(noise(row * noiseCoordMult, column * noiseCoordMult) * 255);
+      // rect(column * tileSize, row * tileSize, tileSize);
+      push();
+      translate(
+        column * tileSize + tileSize * 0.5,
+        row * tileSize + tileSize * 0.5
+      );
+      rotate(
+        radians(noise(row * noiseCoordMult, column * noiseCoordMult) * 360)
+      );
+      // ellipse(0, 0, tileSize);
+      line(-tileSize * 0.3, 0, tileSize * 0.3, 0);
+      pop();
+    }
   }
-  stroke('red');
-  noFill();
-  beginShape;
-  for (let a = 0; a < nGon; a++) {
-    const angle = (TAU / nGon) * a - (TAU / 360) * 90;
-    const pointX = cos(angle) * rad + x;
-    const pointY = sin(angle) * rad + y;
-    vertex(pointX, pointY);
-  }
-  endShape(CLOSE);
 }
-
-// 어느 좌표 x,y에서 임의의 방향(각도) a로, 특정한 거리 r만큼 떨어진 좌표 (m,n)를 찍으려면
-// m = cos(a) * r + x
-// n = sin(a) * r + y

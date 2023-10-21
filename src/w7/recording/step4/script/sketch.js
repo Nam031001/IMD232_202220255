@@ -1,55 +1,31 @@
-// particle의 기본원리 = 일정주기가 넘으면 다시 생성되게함
-//없애야할 건 없애고 화면상에 보이는 것만 계산되도록 해야 한다
-// => 렉방지
-
-let emitters = [];
-let gravity = 0;
-let reppler;
+let dataPoint = [];
 
 function setup() {
   setCanvasContainer('canvas', 3, 2, true);
 
-  gravity = createVector(0, 0.05);
+  frameRate(5);
+  // 프레임을 기본값(60)에서 초당 5번으로 바꾸기
 
-  repeller = new Repeller(width / 2, height / 2, 5000);
-
-  // 등간격으로 떨어지는 5개의 물줄기
-  for (let i = 0; i < 5; i++) {
-    emitters.push(new Emitter((width / 6) * (i + 1), 20));
+  for (let i = 0; i < 50; i++) {
+    dataPoint.push(0.5);
   }
 
   background(255);
 }
 
 function draw() {
-  for (let i = 0; i < emitters.length; i++) {
-    emitters[i].addParticle();
-  }
-
+  dataPoint[dataPoint.length - 1] = map(mouseY, 0, height, 1, 0);
   background(255);
-
-  for (let i = 0; i < emitters.length; i++) {
-    emitters[i].applyGravity(gravity);
-    emitters[i].applyRepeller(repeller);
-    emitters[i].update();
-    emitters[i].display();
+  noStroke();
+  fill(0);
+  for (let i = 0; i < dataPoint.length; i++) {
+    const x = (width / (dataPoint.length + 1)) * (i + 1);
+    const y = map(dataPoint[i], 0, 1, height, 0);
+    ellipse(x, y, 10);
   }
-  repeller.display();
-}
 
-function mouseMoved() {
-  repeller.mouseMoved(mouseX, mouseY);
+  for (let i = 0; i < dataPoint.length - 1; i++) {
+    // 데이터포인트의 i는 자기보다 뒤에있는 친구의 값을 가지고 오게한다
+    dataPoint[i] = dataPoint[i + 1];
+  }
 }
-function mousePressed() {
-  repeller.mousePressed(mouseX, mouseY);
-}
-function mouseDragged() {
-  repeller.mouseDragged(mouseX, mouseY);
-}
-function mouseReleased() {
-  repeller.mouseReleased();
-}
-// 클릭하는 곳에서 새로운 분수가 생겨난다
-// function mousePressed() {
-//   emitters.push(new Emitter(mouseX, mouseY));
-// }

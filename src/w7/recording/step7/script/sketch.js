@@ -1,25 +1,22 @@
-let angle = 0;
-let angleVel;
-let angleAcc;
+let noiseXA = 0;
+let noiseXB = 0;
+let noiseXAVel = 0.01;
+let noiseXBVel = 0.1;
 
 function setup() {
-  setCanvasContainer('canvas', 2, 1, true);
-  angleVel = 0;
-  angleAcc = (TAU / 360) * 0.01;
-  background('white');
+  setCanvasContainer('canvas', 3, 2, true);
+
+  background(255);
 }
 
 function draw() {
-  angleVel += angleAcc;
-  angleVel = constrain(angleVel, -5, 5);
-  //   해당값의 최대값과 최대치를 적용
-  background('255');
+  background(255);
 
-  translate(width / 2, height / 2);
-  rotate(angle);
-  //   line(0, 0, 50, 0);
-  //   line(0, 0, -50, 0);
-  line(-100, 0, 100, 0);
-  ellipse(0, 0, 50);
-  angle += angleVel;
+  // ellipse(width / 2 + random(100, 200), height / 2, 50);
+  // ellipse(width / 2 + random() * 100 + 100, height / 2 + 100, 50);
+  ellipse(width / 2 + noise(noiseXA) * 100 + 100, height / 2, 50);
+  // 최소값 100, 최대값 200을 왔다갔다하도록
+  ellipse(width / 2 + noise(noiseXB) * 100 + 100, height / 2 + 100, 50);
+  noiseXA += noiseXAVel;
+  noiseXB += noiseXBVel;
 }

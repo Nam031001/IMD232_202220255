@@ -1,52 +1,30 @@
-let mover;
-let movers = [];
-let mVec;
+const tileSize = 40;
+let columnNum;
+let rowNum;
+let noiseCoordMult = 0.1;
 
 function setup() {
-  setCanvasContainer('canvas', 3, 2, true);
-  //   mover = new Mover(width / 2, height / 2, 10, 25, 'slateblue');
-  // 랜덤으로 바뀌는 컬러
-  colorMode(HSL, 360, 100, 100, 100);
-  for (let a = 0; a < 100; a++) {
-    movers.push(
-      new Mover(
-        random(width),
-        random(height),
-        10,
-        25,
-        // 랜덤으로 바뀌는 컬러
-        color(random(360), 100, 50, 50)
-      )
-    );
-  }
-  mVec = new createVector(0, 0);
+  setCanvasContainer('canvas', 1, 1, true);
+
+  columnNum = floor(width / tileSize);
+  rowNum = floor(height / tileSize);
 
   background(255);
+
+  // noiseSeed(0);
 }
 
 function draw() {
-  //   mVec.set(mouseX, mouseY);
-  //   const force = p5.Vector.sub(mVec, mover.pos);
-  //   force.setMag(0.5);
-
-  //   mover.applyForce(force);
-  //   mover.update();
-
-  mVec.set(mouseX, mouseY);
-  movers.forEach((eachMover) => {
-    const force = p5.Vector.sub(mVec, eachMover.pos);
-    force.setMag(0.5);
-
-    eachMover.applyForce(force);
-    eachMover.update();
-  });
-
+  // randomSeed(100);
   background(255);
-
-  movers.forEach((eachMover) => {
-    eachMover.display();
-    // eachMover.displayVector();
-  });
-  //   mover.display();
-  //   mover.displayVector();
+  noStroke();
+  // 격자 그리기
+  for (let row = 0; row < rowNum; row++) {
+    for (let column = 0; column < columnNum; column++) {
+      const idx = column + row * columnNum;
+      // fill(random() * 255);
+      fill(noise(row * 0.1, column * noiseCoordMult) * 255);
+      rect(column * tileSize, row * tileSize, tileSize);
+    }
+  }
 }
