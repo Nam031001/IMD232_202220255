@@ -21,14 +21,14 @@ class Ball {
     this.pos.add(this.vel);
     this.acc.mult(0);
     this.lifeSpan -= 1;
-    this.lifeSpan = constrain(this.lifeSpan, 0, 60);
+    // this.lifeSpan = constrain(this.lifeSpan, 0, 60);
   }
-
   display() {
-    fill(this.color, this.lifeSpan);
+    const initialLifespan = 60; // 초기 수명
+    const transparency = map(this.lifeSpan, 0, initialLifespan, 0, 255); // 수명에 따른 투명도 매핑
+    fill(red(this.color), green(this.color), blue(this.color), transparency);
     noStroke();
     ellipse(this.pos.x, this.pos.y, this.rad * 2);
-    // console.log('life', this.lifeSpan);
   }
 
   isDead() {
