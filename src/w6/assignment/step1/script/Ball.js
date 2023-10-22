@@ -8,6 +8,8 @@ class Ball {
     this.mass = mass;
     this.rad = this.mass * 5;
     this.color = color(h, s, v);
+    this.rotationSpeed = random(-0.5, 0.1);
+    this.angle = 0;
   }
 
   applyForce(force) {
@@ -28,7 +30,13 @@ class Ball {
   display() {
     fill(this.color);
     noStroke();
-    rect(this.pos.x, this.pos.y, 2 * this.rad);
+    push();
+    translate(this.pos.x, this.pos.y);
+    this.angle += this.rotationSpeed;
+    rotate(this.angle);
+    rectMode(CENTER);
+    rect(0, 0, 2 * this.rad, 2 * this.rad);
+    pop();
   }
 
   isDead() {

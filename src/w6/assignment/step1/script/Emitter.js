@@ -1,5 +1,5 @@
 class Emitter {
-  constructor(emittingPosX, emittingPosY) {
+  constructor() {
     // this.emittingPos = createVector(emittingPosX, emittingPosY);
     this.balls = [];
   }
