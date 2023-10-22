@@ -21,7 +21,7 @@ function draw() {
   emitter.applyGravity(g);
   emitter.update();
   emitter.display();
-  console.log(emitter.balls.length);
+  console.log('현재 파티클의 개수', emitter.balls.length);
 }
 
 function mouseClicked() {
