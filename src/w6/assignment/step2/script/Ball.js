@@ -26,8 +26,9 @@ class Ball {
   display() {
     const initialLifespan = 60; // 초기 수명
     const transparency = map(this.lifeSpan, 0, initialLifespan, 0, 255); // 수명에 따른 투명도 매핑
+    strokeWeight(0.2);
+    stroke(0, transparency);
     fill(red(this.color), green(this.color), blue(this.color), transparency);
-    noStroke();
     ellipse(this.pos.x, this.pos.y, this.rad * 2);
   }
 
