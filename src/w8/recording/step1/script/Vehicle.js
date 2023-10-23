@@ -61,7 +61,7 @@ class Vehicle {
 
   //   공을 쫓아옴
   seek(target) {
-    // 내가 타겟까지 향하는 거리(타겟, 내 위치)
+    // 타겟에서 내 위치까지의 거리
     const desiredVelocity = p5.Vector.sub(target, this.pos);
     // 속도를 일정속도 이하로 제한시킨다
     desiredVelocity.setMag(this.speedMx);

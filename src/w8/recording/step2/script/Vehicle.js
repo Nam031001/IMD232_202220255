@@ -1,7 +1,7 @@
 // W7 Seeking a Target 29초부터 원리 설명
 
 class Vehicle {
-  constructor(x, y, mass, rad, speedMx, forceMx) {
+  constructor(x, y, mass, rad, speedMx, forceMx, color) {
     this.pos = createVector(x, y);
     this.vel = createVector();
     this.acc = createVector();
@@ -11,6 +11,7 @@ class Vehicle {
     this.speedMx = speedMx;
     // 적용될 수 있는 힘의 최대치
     this.forceMx = forceMx;
+    this.color = color;
   }
 
   applyForce(force) {
@@ -53,7 +54,7 @@ class Vehicle {
     );
     endShape(CLOSE);
     noFill();
-    stroke('red');
+    stroke(this.color);
     ellipse(0, 0, 2 * this.rad);
     // beginShape로 열고 vertex의 괄호안에 좌표를 넣고 endShape에서 닫아주면 해당좌표를 이은 도형을 만든다
     pop();
@@ -61,14 +62,37 @@ class Vehicle {
 
   //   공을 쫓아옴
   seek(target) {
-    // 내가 타겟까지 향하는 거리(타겟, 내 위치)
-    const desiredVelocity = p5.Vector.sub(target, this.pos);
+    // 타겟에서 내 위치까지의 거리
+    const steer = p5.Vector.sub(target, this.pos);
     // 속도를 일정속도 이하로 제한시킨다
-    desiredVelocity.setMag(this.speedMx);
+    steer.setMag(this.speedMx);
     // 아이콘의 머리가 자연스럽게 꺾이도록 조정
-    const steer = p5.Vector.sub(desiredVelocity, this.vel);
+    steer.sub(this.vel);
     steer.limit(this.forceMx);
     this.applyForce(steer);
-    // this.vel.set(desiredVelocity);
+  }
+  flee(target) {
+    // 타겟에서 내 위치까지의 거리
+    const steer = p5.Vector.sub(target, this.pos);
+    steer.mult(-1);
+    // 속도를 일정속도 이하로 제한시킨다
+    steer.setMag(this.speedMx);
+    // 아이콘의 머리가 자연스럽게 꺾이도록 조정
+    steer.sub(this.vel);
+    steer.limit(this.forceMx);
+    this.applyForce(steer);
+  }
+  // 화면밖으로 나가지 못하게 아이콘을 가둠
+  borderInfinite() {
+    if (this.pos.x < -this.rad) {
+      this.pos.x = width + this.rad;
+    } else if (this.pos.x > width + this.rad) {
+      this.pos.x = -this.rad;
+    }
+    if (this.pos.y < -this.rad) {
+      this.pos.y = height + this.rad;
+    } else if (this.pos.y > height + this.rad) {
+      this.pos.y = -this.rad;
+    }
   }
 }

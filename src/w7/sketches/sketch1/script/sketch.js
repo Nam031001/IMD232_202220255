@@ -1,33 +1,26 @@
-let ball;
-let ball2;
-let gravity;
-let wind;
+let vehicle;
+let mVec;
+let debug = true;
 
 function setup() {
-  setCanvasContainer('mySketchGoesHere', 3, 2, true);
-  background('salmon');
-  ball = new Mover(width / 3, 0, 50);
-  ball2 = new Mover((2 * width) / 3, 0, 10);
-  gravity = createVector(0, 0.1);
-  // 왼쪾으로 가는 바람
-  wind = createVector(-1, 0);
+  setCanvasContainer('mySketchGoesHere', 2, 1, true);
+
+  colorMode(HSL, 360, 100, 100, 100);
+
+  vehicle = new Vehicle(width / 2, height / 2, 16, 5, 0.1, color(330, 100, 50));
+  mVec = createVector();
+
+  colorMode(RGB, 255, 255, 255);
+  background(255);
 }
 
 function draw() {
-  let g = p5.Vector.mult(gravity, ball.mass);
-  ball.applyForce(g);
-  let g2 = p5.Vector.mult(gravity, ball2.mass);
-  ball2.applyForce(g2);
-  if (mouseIsPressed) {
-    ball.applyForce(wind);
-    ball2.applyForce(wind);
-  }
-  ball.update();
-  ball2.update();
-  ball.edgeBounce();
-  ball2.edgeBounce();
-  background('salmon');
-  fill('white');
-  ball.display();
-  ball2.display();
+  background(255);
+  mVec.set(mouseX, mouseY);
+  vehicle.seek(mVec);
+  vehicle.update();
+  vehicle.display();
 }
+// seek => desired vel - vel
+//flee => 는 타겟지점을 정반대로 두고 진행
+// 벡터를 뺴기 = 뺴야하는 벡터를 정 반대 방향으로 두고 합해주기
