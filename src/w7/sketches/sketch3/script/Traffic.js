@@ -21,7 +21,8 @@ class Traffic {
   }
 
   addVehicle(x, y) {
-    const mass = floor(random(1, 3));
+    // const mass = floor(random(1, 3));
+    const mass = 1;
     this.vehicles.push(
       new Vehicle(
         x,
