@@ -37,25 +37,26 @@ class Vehicle {
           (this.pos.x - each.pos.x) ** 2 + (this.pos.y - each.pos.y) ** 2;
         // 내 위치에서 다른 친구까지의 거리
         if (distSq < this.neighborhooodRad ** 2) {
-          // dist < 다른객체의 반경
+          // 내 위치에서 다른 친구까지의 거리 < 다른객체의 반경
+          //즉, 거리가 멀면
           steer.add(each.pos);
           //steer에 다른친구의 위치를 더한다
           cnt++;
-          //   ctn에 횟수를 하나 더해준다
+          //ctn에 횟수를 하나 더해준다
         }
       }
     });
     if (cnt > 0) {
       steer.div(cnt);
-      // 가야하는 지점 도출
+      //가야하는 지점 도출, 평균을 구한다
       steer.sub(this.pos);
-      //   가야하는 지점 - 내 위치 => 해당 지점으로 이동
+      //가야하는 지점 - 내 위치
       steer.setMag(this.speedMx);
-      //   내 원이 이동할 방향 생성
+      //speedMx값으로 steer조정, 내 원이 이동할 방향 생성
       steer.sub(this.vel);
       //현 속도를 빼고,
       steer.limit(this.forceMx);
-      //   특정값으로 제한함으로써 내가 가고자하는 위치로 이동시킨다
+      //forceMx값으로 제한함으로써 내가 가고자하는 위치로 이동시킨다
     }
     return steer;
     //steer값을 반환한다
@@ -141,47 +142,75 @@ class Vehicle {
   }
 
   applyForce(force) {
+    // 물체에 힘 작용, force를 받아온다
     const forceDivedByMass = p5.Vector.div(force, this.mass);
+    // forceDivedByMass에 force에서 질량을 나눈 값을 할당한다
     this.acc.add(forceDivedByMass);
+    // 가속도에 forceDivedByMass에를 더한다
   }
 
   update() {
+    // 화면상에 드러나는 요소의 움직임원리 업데이트
     this.vel.add(this.acc);
+    // 속도에 가속도 더하기
     this.vel.limit(this.speedMx);
+    // 가속도를 최대 스피드로 한정짓는다
     this.pos.add(this.vel);
+    // 위치에 속도를 더하기
     this.acc.mult(0);
+    // 가속도를 한번 사이클 돌릴때마다 0으로 설정하기
   }
 
   borderInfinite() {
+    // 화면밖으로 나가도 다시 화면안으로 들어오도록 하는 기능
     if (this.pos.x < -infiniteOffset) {
+      // 먄약 pos.x가 (-infiniteOffset값)-80보다 작다면
+      //= 화면 왼쪽 끝을 벗어난 경우
       this.pos.x = width + infiniteOffset;
+      //pos.x를 화면의 오른쪽 끝으로 이동
     } else if (this.pos.x > width + infiniteOffset) {
+      // 또는 this.pos.x가 오른쪽 끝을 벗어난 경우
       this.pos.x = -infiniteOffset;
+      // this.pos.x를 왼쪽 끝으로 지정한다
     }
     if (this.pos.y < -infiniteOffset) {
+      // 먄약 pos.y가 (-infiniteOffset값)-80보다 작다면
+      //= 화면 왼쪽 끝을 벗어난 경우
       this.pos.y = height + infiniteOffset;
+      //pos.y를 화면의 오른쪽 끝으로 이동
     } else if (this.pos.y > height + infiniteOffset) {
+      // 또는 this.pos.y가 오른쪽 끝을 벗어난 경우
       this.pos.y = -infiniteOffset;
+      // this.pos.y를 왼쪽 끝으로 지정한다
     }
   }
 
   display() {
+    // 화면상에 표시
     push();
+    // 시작
     translate(this.pos.x, this.pos.y);
+    // 원점을 pos위치값으로 이동한다
     rotate(this.vel.heading());
+    // 마우스쪽으로 화살표의 머리를 돌린다
+
     noStroke();
+    // 선없음
     fill(this.color);
+    // 받은 색으로 칠한다
     beginShape();
+    // 도형정의 시작, 아래 정의된 지점을 전부 잇는다
     vertex(this.rad, 0);
+    // 받아온 반지름값, 0 지점
     vertex(this.rad * cos(radians(-135)), this.rad * sin(radians(-135)));
+    //-135도로 특정한 거리 rad만큼 떨어진 좌표 x,y
     vertex(0, 0);
+    // 원점
     vertex(this.rad * cos(radians(135)), this.rad * sin(radians(135)));
+    //135도로 특정한 거리 rad만큼 떨어진 좌표 x,y
     endShape(CLOSE);
-    // noFill();
-    // stroke(0, 0, 60);
-    // ellipse(0, 0, 2 * this.rad);
-    // stroke(0, 0, 80);
-    // ellipse(0, 0, 2 * this.neighborhooodRad);
+    // 도형선언을 완료한다
     pop();
+    // 끝
   }
 }
