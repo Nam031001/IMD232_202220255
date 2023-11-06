@@ -3,11 +3,11 @@ class Traffic {
   constructor() {
     // 안에 들어갈 변수설정
     this.vehicles = [];
-    // vehicles어레이화
+    // vehicles 어레이화, 많은 차량들 생성
   }
 
   run() {
-    // run함수 생성
+    // run함수 생성, separate, align, cohesion의 기능을 구현한다
     this.vehicles.forEach((eachVehicle) => {
       // this.vehicles속 각 요소들에 아래 명령들을 반복한다.
       const separate = eachVehicle.separate(this.vehicles);

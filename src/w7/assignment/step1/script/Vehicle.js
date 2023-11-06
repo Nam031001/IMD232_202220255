@@ -17,7 +17,7 @@ class Vehicle {
     this.forceMx = forceMx;
     // 힘의 최대크기는 받아온다
     this.neighborhooodRad = 50;
-    //객체의 반경을 50으로 설정
+    //객체의 반경을 50으로 설정, 해당 반경안에 있는 것들은 내 이웃이라고 판단한다
     this.color = color;
     // 색은 받아온다
   }
@@ -78,7 +78,7 @@ class Vehicle {
           (this.pos.x - each.pos.x) ** 2 + (this.pos.y - each.pos.y) ** 2;
         // 내 위치에서 다른 친구까지의 거리
         if (distSq < this.neighborhooodRad ** 2) {
-          // dist < 다른객체의 반경
+          // distSq < 다른객체의 반경
           steer.add(each.vel);
           //steer에 다른친구의 속도를 더한다
           cnt++;
@@ -114,7 +114,8 @@ class Vehicle {
         const dist = this.pos.dist(each.pos);
         // 상수 dist = this.pos에서 each.pos까지의 거리
         if (dist > 0 && this.rad + each.rad > dist) {
-          // 충돌한 경우
+          //dist가 0보다 크고, 내 반지름과 다른 객체의 반지름을 합한
+          //값이 dist보다 클 경우 => 충돌한 경우
           const distNormal = dist / (this.rad + each.rad);
           // distNormal = 가장 멀었을 때 1, 겹쳤을 때 0이라는 값이 나옴
           const towardMeVec = p5.Vector.sub(this.pos, each.pos);
@@ -190,7 +191,7 @@ class Vehicle {
   display() {
     // 화면상에 표시
     push();
-    // 시작
+    // 어레이의 끝에 요소 추가 시작
     translate(this.pos.x, this.pos.y);
     // 원점을 pos위치값으로 이동한다
     rotate(this.vel.heading());
@@ -205,14 +206,14 @@ class Vehicle {
     vertex(this.rad, 0);
     // 받아온 반지름값, 0 지점
     vertex(this.rad * cos(radians(-135)), this.rad * sin(radians(-135)));
-    //-135도로 특정한 거리 rad만큼 떨어진 좌표 x,y
+    //-135도로 특정한 거리(rad)만큼 떨어진 좌표 x,y
     vertex(0, 0);
     // 원점
     vertex(this.rad * cos(radians(135)), this.rad * sin(radians(135)));
-    //135도로 특정한 거리 rad만큼 떨어진 좌표 x,y
+    //135도로 특정한 거리 (rad)만큼 떨어진 좌표 x,y
     endShape(CLOSE);
     // 도형선언을 완료한다
     pop();
-    // 끝
+    // 요소 추가 끝, 어레이의 마지막 요소를 제거, 반환한다.
   }
 }
