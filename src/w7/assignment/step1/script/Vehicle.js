@@ -17,7 +17,7 @@ class Vehicle {
     this.forceMx = forceMx;
     // 힘의 최대크기는 받아온다
     this.neighborhooodRad = 50;
-    //객체의 반경반지름을 50으로 설정
+    //객체의 반경을 50으로 설정
     this.color = color;
     // 색은 받아온다
   }
@@ -42,21 +42,22 @@ class Vehicle {
           steer.add(each.pos);
           //steer에 다른친구의 위치를 더한다
           cnt++;
-          //ctn에 횟수를 하나 더해준다
+          //cnt에 횟수를 하나 더해준다
         }
       }
     });
     if (cnt > 0) {
+      //만약 cnt가 0보다 크면
       steer.div(cnt);
-      //가야하는 지점 도출, 평균을 구한다
+      //steer를 cnt로 나눠서 가야하는 지점 도출, 평균을 구한다
       steer.sub(this.pos);
-      //가야하는 지점 - 내 위치
+      //steer - 내 위치
       steer.setMag(this.speedMx);
       //speedMx값으로 steer조정, 내 원이 이동할 방향 생성
       steer.sub(this.vel);
-      //현 속도를 빼고,
+      //현 속도를 steer에서 빼고,
       steer.limit(this.forceMx);
-      //forceMx값으로 제한함으로써 내가 가고자하는 위치로 이동시킨다
+      //forceMx값으로 steer을 제한함으로써 내가 가고자하는 위치로 이동시킨다
     }
     return steer;
     //steer값을 반환한다
@@ -90,11 +91,11 @@ class Vehicle {
       steer.div(cnt);
       // cnt로 steer나누기, 내 원이 이동할 방향이 생성
       steer.setMag(this.speedMx);
-      // 최대속도로 길이제한
+      // 최대속도로 steer의 길이제한
       steer.sub(this.vel);
-      //현 속도를 빼고
+      //steer에서 현 속도를 빼고
       steer.limit(this.forceMx);
-      //   특정값으로 제한함으로써 내가 가고자하는 위치로 이동시킨다
+      //forceMx라는 특정값으로 제한함으로써 내가 가고자하는 위치로 이동시킨다
     }
     return steer;
     //steer값을 반환한다
@@ -107,7 +108,7 @@ class Vehicle {
     const steer = createVector(0, 0);
     // steer라는 상수 선언, 벡터화한다, 초기값 0,0
     others.forEach((each) => {
-      // others의 각 요소들에 설정
+      // others의 각 요소들에 반복하여 설정
       if (each !== this) {
         // others에서 본인(객체)은 제외
         const dist = this.pos.dist(each.pos);
@@ -121,21 +122,22 @@ class Vehicle {
           towardMeVec.setMag(1 / distNormal);
           //towardMeVec의 값을 괄호 안 값으로 제한
           steer.add(towardMeVec);
-          //   steer에 제한된 towardMeVec를 더하기
+          //steer에 제한된 towardMeVec를 더하기
           cnt++;
-          //   ctn에 횟수를 하나 더해준다
+          //ctn에 횟수를 하나 더해준다
         }
       }
     });
     if (cnt > 0) {
+      // 만약 cnt가 0보다 크면
       steer.div(cnt);
-      // 가야하는 지점 도출
+      // cnt로 steer나누기, 내 원이 이동할 방향이 생성
       steer.setMag(this.speedMx);
-      //   내 원이 이동할 방향 생성
+      // 최대속도로 steer의 길이제한
       steer.sub(this.vel);
-      //현 속도를 빼고,
+      //steer에서 현 속도를 빼고
       steer.limit(this.forceMx);
-      //   특정값으로 제한함으로써 내가 가고자하는 위치로 이동시킨다
+      //forceMx라는 특정값으로 제한함으로써 내가 가고자하는 위치로 이동시킨다
     }
     return steer;
     // steer를 반환
