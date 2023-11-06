@@ -31,7 +31,7 @@ function setup() {
   );
 
   const vertices = [
-    { x: 5.5 * 2, y: 4.8 * 2 },
+    { x: 5.5 * 2, y: -4.8 * 2 },
     { x: 7.6 * 2, y: -1.6 * 2 },
     { x: 6.5 * 2, y: 1.8 * 2 },
     { x: 2.7 * 2, y: 4.5 * 2 },
@@ -72,7 +72,7 @@ function draw() {
 
 function mouseDragged() {
   const vertices = [
-    { x: 5.5 * 2, y: 4.8 * 2 },
+    { x: 5.5 * 2, y: -4.8 * 2 },
     { x: 7.6 * 2, y: -1.6 * 2 },
     { x: 6.5 * 2, y: 1.8 * 2 },
     { x: 2.7 * 2, y: 4.5 * 2 },
