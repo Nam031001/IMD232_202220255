@@ -29,6 +29,7 @@ Common.setDecomp(decomp);
 const engine = Engine.create(),
   world = engine.world;
 
+//runner
 const runner = Runner.create();
 
 const oWidth = 800;

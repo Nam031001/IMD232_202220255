@@ -1,36 +1,167 @@
-let traffic;
-// traffic 변수 설정
-let infiniteOffset = 80;
-//infiniteOffset라는 변수값을 80으로 설정
+const {
+  Engine,
+  Render,
+  Runner,
+  Body,
+  Composite,
+  Composites,
+  Constraint,
+  MouseConstraint,
+  Mouse,
+  Bodies,
+} = Matter;
+
+// provide concave decomposition support library
+// Common.setDecomp(decomp);
+
+const oWidth = 800;
+const oHeight = 600;
+
+let ropeA;
+let ropeB;
+let ropeC;
+
+// create engine
+const engine = Engine.create(),
+  world = engine.world;
+
+// create runner
+const runner = Runner.create();
 
 function setup() {
-  //한번만 설정
-  setCanvasContainer('canvas', 3, 2, true);
-  //캔버스 생성(3대2 비율유지)
-  colorMode(HSL, 360, 100, 100, 100);
-  //칼라모드를 hsl로 변경
+  setCanvasContainer('canvas', oWidth, oHeight, true);
+  // add bodies
+  var group = Body.nextGroup(true);
+
+  ropeA = Composites.stack(100, 50, 8, 1, 10, 10, function (x, y) {
+    return Bodies.rectangle(x, y, 50, 20, {
+      collisionFilter: { group: group },
+    });
+  });
+
+  Composites.chain(ropeA, 0.5, 0, -0.5, 0, {
+    stiffness: 0.8,
+    length: 2,
+    render: { type: 'line' },
+  });
+  Composite.add(
+    ropeA,
+    Constraint.create({
+      bodyB: ropeA.bodies[0],
+      pointB: { x: -25, y: 0 },
+      pointA: { x: ropeA.bodies[0].position.x, y: ropeA.bodies[0].position.y },
+      stiffness: 0.5,
+    })
+  );
+
+  group = Body.nextGroup(true);
+
+  ropeB = Composites.stack(350, 50, 10, 1, 10, 10, function (x, y) {
+    return Bodies.circle(x, y, 20, { collisionFilter: { group: group } });
+  });
+
+  Composites.chain(ropeB, 0.5, 0, -0.5, 0, {
+    stiffness: 0.8,
+    length: 2,
+    render: { type: 'line' },
+  });
+  Composite.add(
+    ropeB,
+    Constraint.create({
+      bodyB: ropeB.bodies[0],
+      pointB: { x: -20, y: 0 },
+      pointA: { x: ropeB.bodies[0].position.x, y: ropeB.bodies[0].position.y },
+      stiffness: 0.5,
+    })
+  );
+
+  group = Body.nextGroup(true);
+
+  ropeC = Composites.stack(600, 50, 13, 1, 10, 10, function (x, y) {
+    return Bodies.rectangle(x - 20, y, 50, 20, {
+      collisionFilter: { group: group },
+      chamfer: 5,
+    });
+  });
+
+  Composites.chain(ropeC, 0.3, 0, -0.3, 0, { stiffness: 1, length: 0 });
+  Composite.add(
+    ropeC,
+    Constraint.create({
+      bodyB: ropeC.bodies[0],
+      pointB: { x: -20, y: 0 },
+      pointA: { x: ropeC.bodies[0].position.x, y: ropeC.bodies[0].position.y },
+      stiffness: 0.5,
+    })
+  );
+
+  Composite.add(world, [ropeA, ropeB, ropeC]);
+
+  mouse = Mouse.create(canvas.elt);
+  mouse.pixelRatio = (pixelDensity() * width) / oWidth;
+  let mouseConstraint = MouseConstraint.create(engine, {
+    mouse: mouse,
+    constraint: {
+      stiffness: 0.2,
+    },
+  });
+
+  Composite.add(world, mouseConstraint);
+
+  console.log('ropeA', ropeA);
+  console.log('ropeB', ropeB);
+  console.log('ropeC', ropeC);
+
   background('white');
-  //배경색 흰색
-  traffic = new Traffic();
-  //traffic이라는 변수에 클래스 선언
-  for (let n = 0; n < 10; n++) {
-    //n은 0이고 10보다 같거나 커질때까지 1씩 더해준다,
-    // 해당 범위동안은 아래 식을 반복한다
-    traffic.addVehicle(random(width), random(height));
-    //traffic의 addVehicle을 호출, 초기값을 width의 랜덤값, height의 랜덤값으로 잡는다
-  }
+  Runner.run(runner, engine);
 }
 
 function draw() {
-  //설정을 반복
+  mouse.pixelRatio = (pixelDensity() * width) / oWidth;
   background('white');
-  //배경색 흰색
-  traffic.run();
-  //traffic의 run함수 호출
-}
 
-function mouseDragged() {
-  //마우스를 드래그할 때
-  traffic.addVehicle(mouseX, mouseY);
-  //traffic의 addVehicle을 호출, 초기값을 mouse위치로 잡는다
+  noStroke();
+  fill('lightcoral');
+  // ropeA.forEach((eachA) => {
+  //   beginShape();
+  //   eachA.vertices.forEach((eachVertex) => {
+  //     vertex(
+  //       (eachVertex.x / oWidth) * width,
+  //       (eachVertex.y / oHeight) * height
+  //     );
+  //   });
+  //   endShape(CLOSE);
+  // });
+  ropeA.bodies.forEach((eachBody) => {
+    beginShape();
+    eachBody.vertices.forEach((eachVertex) => {
+      vertex(
+        (eachVertex.x / oWidth) * width,
+        (eachVertex.y / oHeight) * height
+      );
+    });
+    endShape(CLOSE);
+  });
+  fill('cornflowerblue');
+  ropeB.bodies.forEach((eachBody) => {
+    beginShape();
+    eachBody.vertices.forEach((eachVertex) => {
+      vertex(
+        (eachVertex.x / oWidth) * width,
+        (eachVertex.y / oHeight) * height
+      );
+    });
+    endShape(CLOSE);
+  });
+  fill('lightgreen');
+  ropeC.bodies.forEach((eachBody) => {
+    beginShape();
+    eachBody.vertices.forEach((eachVertex) => {
+      vertex(
+        (eachVertex.x / oWidth) * width,
+        (eachVertex.y / oHeight) * height
+      );
+    });
+    endShape(CLOSE);
+  });
 }
