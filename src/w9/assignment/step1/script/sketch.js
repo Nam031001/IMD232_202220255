@@ -8,11 +8,13 @@ const {
   Constraint,
   MouseConstraint,
   Mouse,
+  Vertices,
   Bodies,
+  Common,
 } = Matter;
 
 // provide concave decomposition support library
-// Common.setDecomp(decomp);
+Common.setDecomp(decomp);
 
 const oWidth = 800;
 const oHeight = 600;
@@ -20,6 +22,11 @@ const oHeight = 600;
 let ropeA;
 let ropeB;
 let ropeC;
+
+let mouse;
+let mouseConstraint;
+
+let stack;
 
 // create engine
 const engine = Engine.create(),
@@ -31,15 +38,37 @@ const runner = Runner.create();
 function setup() {
   setCanvasContainer('canvas', oWidth, oHeight, true);
   // add bodies
+
+  let arrow = Vertices.fromPath('10 0 40 20 50 40 40 50 40 80 0 50'),
+    chevron = Vertices.fromPath('100 0 75 50 100 100 25 100 0 50 25 0'),
+    star = Vertices.fromPath('50 0 65 10 69 59 82 90 30 75 28 100 31 59 '),
+    horseShoe = Vertices.fromPath(
+      '35 7 19 17 14 38 14 58 25 79 45 85 65 84 65 66 46 67 34 59 30 44 33 29 45 23 66 23 66 7 53 7'
+    );
+
+  // stack = Composites.stack(50, 50, 6, 4, 10, 10, function (x, y) {
+  //   return Bodies.fromVertices(
+  //     x,
+  //     y,
+  //     Common.choose([arrow, chevron, star, horseShoe])
+  //   );
+  // });
+
   var group = Body.nextGroup(true);
 
-  ropeA = Composites.stack(100, 50, 8, 1, 10, 10, function (x, y) {
-    return Bodies.rectangle(x, y, 50, 20, {
+  ropeA = Composites.stack(100, 15, 9, 1, 10, 10, function (x, y) {
+    return Bodies.fromVertices(x, y, Common.choose([arrow, star, arrow]), {
       collisionFilter: { group: group },
     });
   });
 
-  Composites.chain(ropeA, 0.5, 0, -0.5, 0, {
+  // ropeA = Composites.stack(100, 50, 8, 1, 10, 10, function (x, y) {
+  //   return Bodies.rectangle(x, y, 50, 20, {
+  //     collisionFilter: { group: group },
+  //   });
+  // });
+
+  Composites.chain(ropeA, 0.4, 0, -0.5, 0, {
     stiffness: 0.8,
     length: 2,
     render: { type: 'line' },
@@ -77,14 +106,20 @@ function setup() {
 
   group = Body.nextGroup(true);
 
-  ropeC = Composites.stack(600, 50, 13, 1, 10, 10, function (x, y) {
-    return Bodies.rectangle(x - 20, y, 50, 20, {
+  // ropeC = Composites.stack(600, 50, 13, 1, 10, 10, function (x, y) {
+  //   return Bodies.rectangle(x - 20, y, 50, 20, {
+  //     collisionFilter: { group: group },
+  //     chamfer: 5,
+  //   });
+  // });
+
+  ropeC = Composites.stack(600, 15, 9, 1, 10, 10, function (x, y) {
+    return Bodies.fromVertices(x, y, Common.choose([arrow, star]), {
       collisionFilter: { group: group },
-      chamfer: 5,
     });
   });
 
-  Composites.chain(ropeC, 0.3, 0, -0.3, 0, { stiffness: 1, length: 0 });
+  Composites.chain(ropeC, 0.6, 0, -0.3, 0, { stiffness: 1, length: 0 });
   Composite.add(
     ropeC,
     Constraint.create({
@@ -108,9 +143,9 @@ function setup() {
 
   Composite.add(world, mouseConstraint);
 
-  console.log('ropeA', ropeA);
+  console.log('ropeA', ropeA.bodies);
   console.log('ropeB', ropeB);
-  console.log('ropeC', ropeC);
+  console.log('ropeC', ropeC.bodies);
 
   background('white');
   Runner.run(runner, engine);
@@ -122,26 +157,55 @@ function draw() {
 
   noStroke();
   fill('lightcoral');
-  // ropeA.forEach((eachA) => {
-  //   beginShape();
-  //   eachA.vertices.forEach((eachVertex) => {
-  //     vertex(
-  //       (eachVertex.x / oWidth) * width,
-  //       (eachVertex.y / oHeight) * height
-  //     );
-  //   });
-  //   endShape(CLOSE);
-  // });
+  // stroke(0);
+
   ropeA.bodies.forEach((eachBody) => {
-    beginShape();
-    eachBody.vertices.forEach((eachVertex) => {
-      vertex(
-        (eachVertex.x / oWidth) * width,
-        (eachVertex.y / oHeight) * height
-      );
+    eachBody.parts.forEach((eachPart, idx) => {
+      if (idx === 0) return;
+      beginShape();
+      eachPart.vertices.forEach((eachVertex) => {
+        vertex(
+          (eachVertex.x / oWidth) * width,
+          (eachVertex.y / oHeight) * height
+        );
+        endShape(CLOSE);
+      });
     });
-    endShape(CLOSE);
   });
+
+  // 사용자 정의 다각형 좌표
+  // const customVertices = [
+  //   { x: -25, y: -10 },
+  //   { x: 25, y: -10 },
+  //   { x: 25, y: 10 },
+  //   { x: -25, y: 10 },
+  // ];
+
+  // // 기존 ropeA의 각 낱알을 사용자 정의 다각형으로 교체
+  // ropeA.bodies.forEach((eachBody) => {
+
+  //   // 사용자 정의 다각형을 concave 다각형으로 분해
+  //   const concaveVertices = decomp.quickDecomp(customVertices);
+
+  //   // 사용자 정의 다각형으로 대체
+  //   const customBody = Bodies.fromVertices(
+  //     eachBody.position.x,
+  //     eachBody.position.y,
+  //     concaveVertices,
+  //     {
+  //       collisionFilter: { group: eachBody.collisionFilter.group },
+  //     }
+  //   );
+
+  //   // 기존 body 제거
+  //   Composite.remove(world, eachBody);
+
+  //   // 새로운 body 추가
+  //   Composite.add(world, customBody);
+  // });
+
+  // //...
+
   fill('cornflowerblue');
   ropeB.bodies.forEach((eachBody) => {
     beginShape();
@@ -154,14 +218,28 @@ function draw() {
     endShape(CLOSE);
   });
   fill('lightgreen');
+  // ropeC.bodies.forEach((eachBody) => {
+  //   beginShape();
+  //   eachBody.vertices.forEach((eachVertex) => {
+  //     vertex(
+  //       (eachVertex.x / oWidth) * width,
+  //       (eachVertex.y / oHeight) * height
+  //     );
+  //   });
+  //   endShape(CLOSE);
+  // });
+
   ropeC.bodies.forEach((eachBody) => {
-    beginShape();
-    eachBody.vertices.forEach((eachVertex) => {
-      vertex(
-        (eachVertex.x / oWidth) * width,
-        (eachVertex.y / oHeight) * height
-      );
+    eachBody.parts.forEach((eachPart, idx) => {
+      if (idx === 0) return;
+      beginShape();
+      eachPart.vertices.forEach((eachVertex) => {
+        vertex(
+          (eachVertex.x / oWidth) * width,
+          (eachVertex.y / oHeight) * height
+        );
+        endShape(CLOSE);
+      });
     });
-    endShape(CLOSE);
   });
 }
