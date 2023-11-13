@@ -173,39 +173,6 @@ function draw() {
     });
   });
 
-  // 사용자 정의 다각형 좌표
-  // const customVertices = [
-  //   { x: -25, y: -10 },
-  //   { x: 25, y: -10 },
-  //   { x: 25, y: 10 },
-  //   { x: -25, y: 10 },
-  // ];
-
-  // // 기존 ropeA의 각 낱알을 사용자 정의 다각형으로 교체
-  // ropeA.bodies.forEach((eachBody) => {
-
-  //   // 사용자 정의 다각형을 concave 다각형으로 분해
-  //   const concaveVertices = decomp.quickDecomp(customVertices);
-
-  //   // 사용자 정의 다각형으로 대체
-  //   const customBody = Bodies.fromVertices(
-  //     eachBody.position.x,
-  //     eachBody.position.y,
-  //     concaveVertices,
-  //     {
-  //       collisionFilter: { group: eachBody.collisionFilter.group },
-  //     }
-  //   );
-
-  //   // 기존 body 제거
-  //   Composite.remove(world, eachBody);
-
-  //   // 새로운 body 추가
-  //   Composite.add(world, customBody);
-  // });
-
-  // //...
-
   fill('cornflowerblue');
   ropeB.bodies.forEach((eachBody) => {
     beginShape();
