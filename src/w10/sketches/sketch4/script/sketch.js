@@ -1,136 +1,91 @@
-var Engine = Matter.Engine,
-  Render = Matter.Render,
-  Runner = Matter.Runner,
-  Composites = Matter.Composites,
-  Events = Matter.Events,
-  Constraint = Matter.Constraint,
-  MouseConstraint = Matter.MouseConstraint,
-  Mouse = Matter.Mouse,
-  Body = Matter.Body,
-  Composite = Matter.Composite,
-  Bodies = Matter.Bodies;
+let cells = [];
 
-// create engine
-var engine = Engine.create(),
-  world = engine.world;
+//홀수
+const colNum = 51,
+  rowNum = 1;
 
-// create runner
-var runner = Runner.create();
+let w, h;
 
-let rock;
+let currentGen = 0;
 
-// setup에서 물체 만들기
 function setup() {
-  setCanvasContainer('mySketchGoesHere', 800, 600, true);
+  setCanvasContainer('canvas', 1, 1, true);
 
-  // 1. add bodies - 물체 생성
-  // 공중에 받치고 있는 땅
-  var ground = Bodies.rectangle(395, 600, 815, 50, {
-    isStatic: true,
-    render: { fillStyle: '#060a19' },
+  randomSeed(1);
+
+  w = width / colNum;
+  h = w;
+
+  //숫자의 시작이 0 일때 내 위치번호(idx)를 구하는 공식 idx = totalColumNumber * row + col;
+  //나의 위치번호를 알고 있을 떄 내 위치를 알아낼 수 있는 공식 col = idx%totalColNum
+  for (let row = 0; row < rowNum; row++) {
+    for (let col = 0; col < colNum; col++) {
+      const x = w * col;
+      const y = h * row;
+
+      // state의 랜덤값이 0.5보다 작을경우 false, 그렇지 않을 경우 true
+      // let state;
+      // if (random() < 0.5) {
+      //   state = false;
+      // } else {
+      //   state = true;
+      // }
+
+      // const state = random() < 0.5;
+      let state = false;
+      if (col === floor(colNum / 2)) {
+        state = true;
+      }
+      const idx = colNum * row + col;
+      const newCell = new Cell(x, y, w, h, state, idx);
+      cells.push(newCell);
+    }
+  }
+
+  cells.forEach((eachCell) => {
+    eachCell.addFriends(cells);
   });
-  // 다각형 생성
-  rock = Bodies.polygon(170, 450, 8, 20, { density: 0.004 });
-  //활시위
-  var anchor = { x: 170, y: 450 };
-  var elastic = Constraint.create({
-    pointA: anchor,
-    bodyB: rock,
-    length: 0.01,
-    damping: 0.01,
-    stiffness: 0.05,
+
+  cells.forEach((eachCell) => {
+    eachCell.setRule(54);
   });
 
-  //   피라미드 탑쌓기
-  var pyramid = Composites.pyramid(500, 300, 9, 10, 0, 0, function (x, y) {
-    return Bodies.rectangle(x, y, 25, 40);
-  });
+  console.log(cells);
 
-  var ground2 = Bodies.rectangle(610, 250, 200, 20, {
-    isStatic: true,
-    render: { fillStyle: '#060a19' },
-  });
-
-  var pyramid2 = Composites.pyramid(550, 0, 5, 10, 0, 0, function (x, y) {
-    return Bodies.rectangle(x, y, 25, 40);
-  });
-
-  //2. 엔진세계에 우리가 만든 물체를 추가
-  Composite.add(engine.world, [
-    ground,
-    pyramid,
-    ground2,
-    pyramid2,
-    rock,
-    elastic,
-  ]);
-
-  // add mouse control
-  var mouse = Mouse.create(document.querySelector('.p5Canvas')),
-    mouseConstraint = MouseConstraint.create(engine, {
-      mouse: mouse,
-      constraint: {
-        stiffness: 0.2,
-        render: {
-          visible: false,
-        },
-      },
-    });
-
-  Composite.add(world, mouseConstraint);
-
-  Runner.run(runner, engine);
+  frameRate(4);
   background('white');
+  // 한번만 실행하고 멈추기
+  // noLoop(0);
 }
 
 function draw() {
   background('white');
 
-  //   도형 그려주기
-  beginShape();
-  rock.vertices.forEach((each) => {
-    vertex(each.x, each.y);
+  const newGen = [];
+  for (let col = 0; col < colNum; col++) {
+    const idx = colNum * currentGen + col;
+    cells[idx].calcNextState();
+    const newCell = cells[idx].createNextGen();
+    newGen.push(newCell);
+    cells.push(newCell);
+  }
+
+  // cells.forEach((eachCell) => {
+  //   eachCell.updateState();
+  // });
+
+  // newGen.forEach((eachNewGen) => {
+  //   // cells에 eachNewGen를 넣는다
+  //   cells.push(eachNewGen);
+  // });
+
+  newGen.forEach((eachNewGen) => {
+    eachNewGen.addFriends(cells);
   });
-  endShape(CLOSE);
+
+  currentGen++;
+
+  cells.forEach((eachCell) => {
+    eachCell.display();
+  });
 }
-
-// create renderer
-// const elem = document.querySelector('#mySketchGoesHere');
-// var render = Render.create({
-//   element: elem,
-//   engine: engine,
-//   options: {
-//     width: 800,
-//     height: 600,
-//     showAngleIndicator: true,
-//     showCollisions: true,
-//     showVelocity: true,
-//   },
-// });
-// Render.run(render);
-
-// Events.on(engine, 'afterUpdate', function () {
-//   if (
-//     mouseConstraint.mouse.button === -1 &&
-//     (rock.position.x > 190 || rock.position.y < 430)
-//   ) {
-//     // Limit maximum speed of current rock.
-//     if (Body.getSpeed(rock) > 45) {
-//       Body.setSpeed(rock, 45);
-//     }
-
-//     // Release current rock and add a new one.
-//     rock = Bodies.polygon(170, 450, 7, 20, rockOptions);
-//     Composite.add(engine.world, rock);
-//     elastic.bodyB = rock;
-//   }
-// });
-
-// keep the mouse in sync with rendering
-// render.mouse = mouse;
-
-// // fit the render viewport to the scene
-// Render.lookAt(render, {
-//   min: { x: 0, y: 0 },
-//   max: { x: 800, y: 600 },
-// });

@@ -1,127 +1,69 @@
-var Engine = Matter.Engine,
-  Render = Matter.Render,
-  Runner = Matter.Runner,
-  Body = Matter.Body,
-  Composite = Matter.Composite,
-  Composites = Matter.Composites,
-  Constraint = Matter.Constraint,
-  MouseConstraint = Matter.MouseConstraint,
-  Mouse = Matter.Mouse,
-  Bodies = Matter.Bodies;
+let cells = [];
 
-// create engine
-var engine = Engine.create(),
-  world = engine.world;
+//홀수
+const colNum = 51,
+  rowNum = 1;
 
-// create renderer
-const elem = document.querySelector('#mySketchGoesHere');
-var render = Render.create({
-  element: elem,
-  engine: engine,
-  options: {
-    width: 800,
-    height: 600,
-    showAngleIndicator: true,
-    showCollisions: true,
-    showVelocity: true,
-  },
-});
+let w, h;
 
-Render.run(render);
+function setup() {
+  setCanvasContainer('canvas', 51, 1, true);
 
-// create runner
-var runner = Runner.create();
-Runner.run(runner, engine);
+  randomSeed(1);
 
-// add bodies
-var group = Body.nextGroup(true);
+  w = width / colNum;
+  h = height / rowNum;
 
-var ropeA = Composites.stack(100, 50, 8, 1, 10, 10, function (x, y) {
-  return Bodies.rectangle(x, y, 50, 20, { collisionFilter: { group: group } });
-});
+  //숫자의 시작이 0 일때 내 위치번호(idx)를 구하는 공식 idx = totalColumNumber * row + col;
+  //나의 위치번호를 알고 있을 떄 내 위치를 알아낼 수 있는 공식 col = idx%totalColNum
+  for (let row = 0; row < rowNum; row++) {
+    for (let col = 0; col < colNum; col++) {
+      const x = w * col;
+      const y = h * row;
 
-Composites.chain(ropeA, 0.5, 0, -0.5, 0, {
-  stiffness: 0.8,
-  length: 2,
-  render: { type: 'line' },
-});
-Composite.add(
-  ropeA,
-  Constraint.create({
-    bodyB: ropeA.bodies[0],
-    pointB: { x: -25, y: 0 },
-    pointA: { x: ropeA.bodies[0].position.x, y: ropeA.bodies[0].position.y },
-    stiffness: 0.5,
-  })
-);
+      // state의 랜덤값이 0.5보다 작을경우 false, 그렇지 않을 경우 true
+      // let state;
+      // if (random() < 0.5) {
+      //   state = false;
+      // } else {
+      //   state = true;
+      // }
 
-group = Body.nextGroup(true);
+      // const state = random() < 0.5;
+      let state = false;
+      if (col === floor(colNum / 2)) {
+        state = true;
+      }
+      const idx = colNum * row + col;
+      const newCell = new Cell(x, y, w, h, state, idx);
+      cells.push(newCell);
+    }
+  }
 
-var ropeB = Composites.stack(350, 50, 10, 1, 10, 10, function (x, y) {
-  return Bodies.circle(x, y, 20, { collisionFilter: { group: group } });
-});
-
-Composites.chain(ropeB, 0.5, 0, -0.5, 0, {
-  stiffness: 0.8,
-  length: 2,
-  render: { type: 'line' },
-});
-Composite.add(
-  ropeB,
-  Constraint.create({
-    bodyB: ropeB.bodies[0],
-    pointB: { x: -20, y: 0 },
-    pointA: { x: ropeB.bodies[0].position.x, y: ropeB.bodies[0].position.y },
-    stiffness: 0.5,
-  })
-);
-
-group = Body.nextGroup(true);
-
-var ropeC = Composites.stack(600, 50, 13, 1, 10, 10, function (x, y) {
-  return Bodies.rectangle(x - 20, y, 50, 20, {
-    collisionFilter: { group: group },
-    chamfer: 5,
-  });
-});
-
-Composites.chain(ropeC, 0.3, 0, -0.3, 0, { stiffness: 1, length: 0 });
-Composite.add(
-  ropeC,
-  Constraint.create({
-    bodyB: ropeC.bodies[0],
-    pointB: { x: -20, y: 0 },
-    pointA: { x: ropeC.bodies[0].position.x, y: ropeC.bodies[0].position.y },
-    stiffness: 0.5,
-  })
-);
-
-Composite.add(world, [
-  ropeA,
-  ropeB,
-  ropeC,
-  Bodies.rectangle(400, 600, 1200, 50.5, { isStatic: true }),
-]);
-
-// add mouse control
-var mouse = Mouse.create(render.canvas),
-  mouseConstraint = MouseConstraint.create(engine, {
-    mouse: mouse,
-    constraint: {
-      stiffness: 0.2,
-      render: {
-        visible: false,
-      },
-    },
+  cells.forEach((eachCell) => {
+    eachCell.addFriends(cells);
   });
 
-Composite.add(world, mouseConstraint);
+  console.log(cells);
 
-// keep the mouse in sync with rendering
-render.mouse = mouse;
+  frameRate(4);
+  background('white');
+  // 한번만 실행하고 멈추기
+  // noLoop(0);
+}
 
-// fit the render viewport to the scene
-Render.lookAt(render, {
-  min: { x: 0, y: 0 },
-  max: { x: 700, y: 600 },
-});
+function draw() {
+  background('white');
+
+  cells.forEach((eachCell) => {
+    eachCell.calcNextState();
+  });
+
+  cells.forEach((eachCell) => {
+    eachCell.updateState();
+  });
+
+  cells.forEach((eachCell) => {
+    eachCell.display();
+  });
+}

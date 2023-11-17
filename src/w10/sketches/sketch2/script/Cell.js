@@ -7,6 +7,7 @@ class Cell {
     this.state = state;
     this.nextState = state;
     this.idx = idx;
+    //한 사각형을 감싸고 있는 8개 사각형
     this.friends = [];
   }
 
@@ -22,7 +23,7 @@ class Cell {
       this.idx + colNum - 1, //왼아
       this.idx - 1, //왼
     ];
-    const myCol = this.idx % colNum;
+    const myCol = this.idx;
     const myRow = floor(this.idx / colNum);
     //내가 몇번째인지..
 
