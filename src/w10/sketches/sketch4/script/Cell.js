@@ -10,16 +10,16 @@ class Cell {
     //한 사각형을 감싸고 있는 2개 사각형
     this.friends = [];
     //다음 모양에 따른 룰
-    this.rule = [
-      false, //111=7
-      false, //110=6
-      false, //101=5
-      true, //100=4
-      true, //011=3
-      true, //010=2
-      true, //001 =1
-      false, //000 = 0
-    ];
+    // this.rule = [
+    //   false, //111=7
+    //   false, //110=6
+    //   false, //101=5
+    //   true, //100=4
+    //   true, //011=3
+    //   true, //010=2
+    //   true, //001 =1
+    //   false, //000 = 0
+    // ];
     // this.rule = [
     //   false, //000 = 0
     //   true, //001 =1
@@ -30,19 +30,6 @@ class Cell {
     //   false, //110=6
     //   false, //111=7
     // ];
-  }
-
-  // denaryNum을 2진수로 바꿈
-  setRule(denaryNum) {
-    let binaratyString = denaryNum.toString(2);
-    // 자릿수가 8자리보다 부족할 경우, 8자리로 만든다
-    while (binaratyString.length < 8) {
-      binaratyString = '0' + binaratyString;
-    }
-    //1일 경우 true, 0일 경우 false
-    for (let idx = 0; idx < 8; idx++) {
-      this.rule[idx] = binaratyString[idx] === '1';
-    }
   }
 
   // cell 어레이를 프렌즈 어레이에 넣는다, 내가 몇인지를 알아야한다
@@ -90,8 +77,8 @@ class Cell {
     // console.log('decimalNum', decimalNum);
     // 예를 들어 binary값 2가 나왔을 때 해당 값을 rule에 넣으면 인덱스순으로
     // 세져서 1이 나오는 난제 해결
-    const ruleIdx = this.rule.length - 1 - decimalNum;
-    this.nextState = this.rule[ruleIdx];
+    const ruleIdx = rule.length - 1 - decimalNum;
+    this.nextState = rule[ruleIdx];
     // console.log(this.nextState);
   }
 
