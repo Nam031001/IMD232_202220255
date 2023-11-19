@@ -1,49 +1,119 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>남현지 W3 Sketch4</title>
-    <link
-      href="//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css"
-      rel="stylesheet"
-      type="text/css" />
-    <link rel="stylesheet" href="../../../../style/style.css" />
-    <link rel="stylesheet" href="../../../../plugin/prism/prism.css" />
-    <script src="../../../../plugin/prism/prism.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/p5@latest/lib/p5.js"></script>
-    <script src="../../../../script/p5Util.js" defer></script>
-    <script src="./script/sketch.js"></script>
-    <script src="./script/Mover.js"></script>
+    <title>Rock Paper Scissors Cellular Automaton</title>
+    <style>
+      canvas {
+        border: 1px solid #000;
+        display: block;
+        margin: 20px auto;
+      }
+    </style>
   </head>
   <body>
-    <div class="viewport">
-      <header>
-        <section>
-          <div class="container">
-            <h1>남현지 W3 Sketch4</h1>
-          </div>
-        </section>
-      </header>
-      <main>
-        <section>
-          <div class="container">
-            <div id="mySketchGoesHere"></div>
-          </div>
-        </section>
-      </main>
-      <footer>
-        <section>
-          <div class="container">
-            <h2>코드</h2>
-            <h6>skech.js</h6>
-            <pre
-              class="line-numbers"
-              data-src="./script/sketch.js"
-              data-download-link></pre>
-          </div>
-        </section>
-      </footer>
-    </div>
+    <canvas id="canvas" width="400" height="400"></canvas>
+
+    <script>
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+      const size = 10;
+      const rows = canvas.width / size;
+      const cols = canvas.height / size;
+      const automaton = createAutomaton(rows, cols);
+
+      function createAutomaton(rows, cols) {
+        const automaton = new Array(rows)
+          .fill(null)
+          .map(() => new Array(cols).fill('R'));
+
+        // Initialize with a Rock, Paper, Scissors pattern
+        for (let i = 0; i < rows; i++) {
+          for (let j = 0; j < cols; j++) {
+            if ((i + j) % 3 === 0) {
+              automaton[i][j] = 'R'; // Rock
+            } else if ((i + j) % 3 === 1) {
+              automaton[i][j] = 'P'; // Paper
+            } else {
+              automaton[i][j] = 'S'; // Scissors
+            }
+          }
+        }
+
+        return automaton;
+      }
+
+      function drawAutomaton() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i < rows; i++) {
+          for (let j = 0; j < cols; j++) {
+            const state = automaton[i][j];
+            const color =
+              state === 'R' ? 'red' : state === 'P' ? 'blue' : 'green';
+            ctx.fillStyle = color;
+            ctx.fillRect(i * size, j * size, size, size);
+          }
+        }
+      }
+
+      function updateAutomaton() {
+        const newAutomaton = new Array(rows)
+          .fill(null)
+          .map(() => new Array(cols).fill('R'));
+
+        for (let i = 0; i < rows; i++) {
+          for (let j = 0; j < cols; j++) {
+            const state = automaton[i][j];
+            const neighbors = getNeighbors(i, j);
+
+            // Rule: Rock (R) beats Scissors (S), Scissors (S) beats Paper (P), Paper (P) beats Rock (R)
+            if (state === 'R' && neighbors.includes('S')) {
+              newAutomaton[i][j] = 'R';
+            } else if (state === 'P' && neighbors.includes('R')) {
+              newAutomaton[i][j] = 'P';
+            } else if (state === 'S' && neighbors.includes('P')) {
+              newAutomaton[i][j] = 'S';
+            } else {
+              newAutomaton[i][j] = state;
+            }
+          }
+        }
+
+        automaton = newAutomaton;
+      }
+
+      function getNeighbors(x, y) {
+        const neighbors = [];
+
+        for (let i = -1; i <= 1; i++) {
+          for (let j = -1; j <= 1; j++) {
+            const newX = x + i;
+            const newY = y + j;
+
+            if (
+              newX >= 0 &&
+              newX < rows &&
+              newY >= 0 &&
+              newY < cols &&
+              !(i === 0 && j === 0)
+            ) {
+              neighbors.push(automaton[newX][newY]);
+            }
+          }
+        }
+
+        return neighbors;
+      }
+
+      function animate() {
+        drawAutomaton();
+        updateAutomaton();
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    </script>
   </body>
 </html>

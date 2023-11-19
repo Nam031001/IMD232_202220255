@@ -1,63 +1,97 @@
-let pos;
-let vel;
-let acc;
-let radius = 50;
-
-let anInstance;
-let anotherInstance;
-let instanceArray = [];
+const tiles = [];
+const rowNum = 50,
+  colNum = 50;
 
 function setup() {
-  setCanvasContainer('mySketchGoesHere', 3, 2, true);
-  background('white');
-  reset();
-  anInstance = new Mover();
-  anotherInstance = new Mover();
+  setCanvasContainer('canvas', 1, 1, true);
 
-  // for (let i = 0; i < 10; i++) {
-  //   instanceArray.push(new Mover());
-  // }
+  const w = width / colNum;
+  const h = w;
+  for (let row = 0; row < rowNum; row++) {
+    for (let col = 0; col < colNum; col++) {
+      const x = w * col;
+      const y = h * row;
+      const newTile = new RPSCell(x, y, w, h);
+      tiles.push(newTile);
+    }
+  }
+  for (let row = 0; row < rowNum; row++) {
+    for (let col = 0; col < colNum; col++) {
+      const neighborsIdx = [
+        getIdx(row - 1, col - 1),
+        getIdx(row - 1, col),
+        getIdx(row - 1, col + 1),
+        getIdx(row, col + 1),
+        getIdx(row + 1, col + 1),
+        getIdx(row + 1, col),
+        getIdx(row + 1, col - 1),
+        getIdx(row, col - 1),
+      ];
+      if (col === 0) {
+        neighborsIdx[0] = -1;
+        neighborsIdx[6] = -1;
+        neighborsIdx[7] = -1;
+      } else if (col === colNum - 1) {
+        neighborsIdx[2] = -1;
+        neighborsIdx[3] = -1;
+        neighborsIdx[4] = -1;
+      }
+      if (row === 0) {
+        neighborsIdx[0] = -1;
+        neighborsIdx[1] = -1;
+        neighborsIdx[2] = -1;
+      } else if (row === rowNum - 1) {
+        neighborsIdx[4] = -1;
+        neighborsIdx[5] = -1;
+        neighborsIdx[6] = -1;
+      }
+      const neighbors = [];
+      neighborsIdx.forEach((eachIdx) => {
+        neighbors.push(eachIdx >= 0 ? tiles[eachIdx] : null);
+      });
+      const idx = getIdx(row, col);
+      tiles[idx].setNeighbors(neighbors);
+    }
+  }
+  randomSeed(1);
+  tiles.forEach((each) => {
+    each.state = random(each.states); // 각 셀 초기 상태 랜덤 설정
+  });
+
+  frameRate(15);
+  background(255);
+  tiles.forEach((each) => {
+    each.display(mouseX, mouseY);
+  });
 }
 
 function draw() {
-  background('white');
-  // update();
-  // infiniteEdge();
-  // display();
-  anInstance.display();
-  anInstance.update();
-  anInstance.infiniteEdge();
-  anInstance.displayVector();
+  background(255);
+
+  tiles.forEach((each) => {
+    each.calcNextState();
+  });
+  tiles.forEach((each) => {
+    each.update();
+  });
+
+  tiles.forEach((each) => {
+    each.display(mouseX, mouseY);
+  });
 }
 
-function reset() {
-  pos = createVector(width / 2, height / 2);
-  vel = createVector(0, 0);
-  acc = createVector();
+function getIdx(row, col) {
+  return row * colNum + col;
 }
 
-function update() {
-  acc = p5.Vector.random2D();
+// mouseClicked 이벤트 삭제
 
-  acc.mult(0.5);
-  vel.add(acc);
-  vel.limit(20);
-  pos.add(vel);
-}
-
-function infiniteEdge() {
-  if (pos.x < 0) {
-    pos.x += width;
-  } else if (pos.x >= width) {
-    pos.x -= width;
-  }
-  if (pos.y < 0) {
-    pos.y += height;
-  } else if (pos.y >= height) {
-    pos.y -= height;
-  }
-}
-
-function display() {
-  ellipse(pos.x, pos.y, 2 * radius);
+function keyPressed() {
+  // mouseClicked 이벤트 대신 자동 계산으로 변경
+  tiles.forEach((each) => {
+    each.calcNextState();
+  });
+  tiles.forEach((each) => {
+    each.update();
+  });
 }
