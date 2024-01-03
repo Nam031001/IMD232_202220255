@@ -72,68 +72,88 @@ division *= 1 / two;
 console.log('나누기', division);
 
 let counter = 0;
+
 counter += 1;
 console.log('counter', counter);
+
 counter += 1;
 console.log('counter', counter);
+
 counter++;
 console.log('counter', counter);
+
 counter++;
 console.log('counter', counter);
+
 counter++;
 console.log('counter', counter);
+
 counter--;
 console.log('counter', counter);
+
 let remainder = counter % 8;
 console.log('remainder', remainder);
+
 counter++;
 remainder = counter % 8;
 console.log('counter', counter);
 console.log('remainder', remainder);
+
 counter++;
 remainder = counter % 8;
 console.log('counter', counter);
 console.log('remainder', remainder);
+
 counter++;
 remainder = counter % 8;
 console.log('counter', counter);
 console.log('remainder', remainder);
+
 counter++;
 remainder = counter % 8;
 console.log('counter', counter);
 console.log('remainder', remainder);
+
 counter++;
 remainder = counter % 8;
 console.log('counter', counter);
 console.log('remainder', remainder);
+
 counter++;
 remainder = counter % 8;
 console.log('counter', counter);
 console.log('remainder', remainder);
+
 counter++;
 remainder = counter % 8;
 console.log('counter', counter);
 console.log('remainder', remainder);
+
 counter++;
 remainder = counter % 8;
 console.log('counter', counter);
 console.log('remainder', remainder);
+
 counter++;
 remainder = counter % 8;
 console.log('counter', counter);
 console.log('remainder', remainder);
+
 counter++;
 remainder = counter % 8;
 console.log('counter', counter);
 console.log('remainder', remainder);
+
 counter++;
 remainder = counter % 8;
 console.log('counter', counter);
 console.log('remainder', remainder);
+
 counter++;
 remainder = counter % 8;
 console.log('counter', counter);
 console.log('remainder', remainder);
+
 counter++;
 remainder = counter % 8;
 console.log('counter', counter);

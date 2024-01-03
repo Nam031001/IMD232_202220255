@@ -98,7 +98,17 @@ function draw() {
 // mouseReleased => 마우스 버튼이 놓일 때마다 한 번씩 호출
 function mouseReleased() {
   noiseSeed(millis());
+  document.addEventListener('click', playAudio);
 }
+
+// function playSound(audioName) {
+//   let audio = new Audio(audioName);
+//   audio.play();
+// }
+// playSound('../finals/sound/FX_piano01.mp3');
+
+// document.addEventListener('click', playSound);
+
 // 벡터 v가 화면 안에 있는지 여부를 반환하는 함수
 function onScreen(v) {
   return v.x >= 0 && v.x <= width && v.y >= 0 && v.y <= height;

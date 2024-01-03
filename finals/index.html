@@ -14,6 +14,14 @@
     <script src="https://cdn.jsdelivr.net/npm/p5@latest/lib/p5.js"></script>
     <script src="../../../../script/p5Util.js" defer></script>
     <script src="./script/sketch.js"></script>
+
+    <audio id="myAudio" src="../finals/sound/MP_swosh.mp3"></audio>
+    <script>
+      function playAudio() {
+        const audio = document.getElementById('myAudio');
+        audio.play();
+      }
+    </script>
   </head>
   <body>
     <div class="viewport">
