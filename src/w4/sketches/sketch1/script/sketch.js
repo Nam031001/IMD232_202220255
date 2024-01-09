@@ -14,6 +14,7 @@ function setup() {
 }
 
 function draw() {
+  //gravity에 ball의 mass를 곱한값을 g로 삼는다
   let g = p5.Vector.mult(gravity, ball.mass);
   ball.applyForce(g);
   let g2 = p5.Vector.mult(gravity, ball2.mass);
