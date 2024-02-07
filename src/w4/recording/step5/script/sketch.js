@@ -23,7 +23,7 @@ function draw() {
   }
 
   if (moverA.contactEdge()) {
-    let c = 0.01;
+    let c = 0.9;
     // let friction = createVector(moverA.vel.x, moverA.vel.y);
     let friction = moverA.vel.copy();
     friction.mult(-1);
@@ -44,7 +44,7 @@ function draw() {
   }
 
   if (moverB.contactEdge()) {
-    let c = 0.9;
+    let c = 0.01;
     let friction = moverB.vel.copy();
     friction.mult(-1);
     friction.mult(c);

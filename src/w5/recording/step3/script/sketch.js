@@ -29,6 +29,9 @@ function draw() {
       fill((255 / stripeNum) * a, (255 / stripeNum2) * b, 255);
       let x = ((a + 1) * width) / (stripeNum + 1);
       let y = ((b + 1) * height) / (stripeNum2 + 1);
+      //a,b의 값은 stripeNum보다 1작기 때문에 1더하고, 비율을 맞추기 위해 width곱하기
+      // 내가 그리려는 것보다 1칸 더 만들어야함
+
       if (a % 2 == 0) {
         ellipse(x, y, 10);
       } else {
