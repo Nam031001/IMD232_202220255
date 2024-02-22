@@ -11,7 +11,7 @@ class Repeller {
   repel(particle) {
     // 밀어내는방향, 파티클쪽으로 향하는 벡터
     const force = p5.Vector.sub(particle.pos, this.pos);
-    // distance를 단위벡터로 변환
+    // distance를 단위벡터로 변환, force.mag()는 벡터의 크기를 계산하는 함수
     const distance = force.mag();
     // 파워의 거리에 반비례
     let strength = this.power / distance ** 2;

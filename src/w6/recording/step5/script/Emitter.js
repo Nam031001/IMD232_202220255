@@ -26,9 +26,11 @@ class Emitter {
       // 걍 별뜻 없음, this.paricles가 길어서 eachparticl로 할당
       const eachParticle = this.particles[i];
       eachParticle.update();
+
       if (eachParticle.isDead()) {
         this.particles.splice(i, 1);
       }
+      console.log(eachParticle.length);
     }
   }
 
