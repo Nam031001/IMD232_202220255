@@ -20,7 +20,8 @@ function draw() {
   fill(0);
   for (let i = 0; i < dataPoint.length; i++) {
     const x = (width / (dataPoint.length + 1)) * (i + 1);
-    const y = map(dataPoint[i], 0, 1, height, 0);
+    // const x = (width / (dataPoint.length + 1)) * (dataPoint.length - i);
+    const y = map(dataPoint[i], 1, 0, 0, height);
     ellipse(x, y, 10);
   }
 
